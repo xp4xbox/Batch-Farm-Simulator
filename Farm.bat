@@ -1,6 +1,7 @@
 @echo off
 TITLE Farm Town
 color 1f
+setlocal enabledelayedexpansion
 :start
 cls
 echo Please Type Your Name To Continue :
@@ -22,6 +23,11 @@ goto sets
 
 :sets
 cls
+set harvestwheat=0
+set harvestbarley=0
+set plantbarley=0
+set harvestcorn=0
+set plant
 set corn=0
 set wheat=0
 set barley=0
@@ -92,13 +98,91 @@ if not defined HF (
 goto harvestf
 )
 if "%HF%"=="1" goto plant
-if "%HF%"=="2" goto harvest
+if "%HF%"=="2" goto harvestt
 if "%HF%"=="3" goto cfield
 if "%HF%"=="4" goto main
 echo.
 echo Invalid Choice, Please Try Again.
 pause >nul
 goto harvestf
+::####################################################################
+:harvestt
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo What Would You Like To Harvest?
+echo.
+echo.
+echo 1) Corn
+echo 2) Wheat
+echo 3) Barley
+echo 4) Back To Harvest Field
+echo.
+echo.
+set /p HV=
+if not defined HV (
+goto harvestt
+)
+if "%HV%"=="1" goto harvestcorn
+if "%HV%"=="2" goto harvestwheat
+if "%HV%"=="3" goto harvestbarley
+if "%HV%"=="4" goto harvestf
+echo.
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto harvestt
+::###################################################################
+:harvestcorn
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+if !plantcorn! LSS 1 (
+echo.
+echo.
+echo.
+echo Sorry, You Do Not Have Any Corn Planted.
+pause >nul
+goto harvestt
+)
+echo.
+echo.
+::Set timer for length until corn is ready currently at 3 seconds
+ping -n 3 127.0.0.1 >nul
+echo The Corn Is Now Ready.
+pause >nul
+goto harvestcorn2
+:harvestcorn2
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Do You Really Want To Harvest Your Corn (Y/N)
+echo.
+echo.
+set /p choice14=
+if not defined choice14 (
+goto harvestcorn2
+)
+echo.
+echo.
+if "%choice14%"=="y" goto yharvestcorn
+if "%choice14%"=="n" goto harvestcorn2
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto harvestcorn2
+:yharvestcorn
+set /a harvestcorn=%plantcorn% + %harvestcorn%
+set /a plantcorn=%plantcorn% - %harvestcorn%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Your Corn Has Been Harvested.
+pause >nul
+goto harvestt
 ::####################################################################
 :plant
 cls
@@ -138,18 +222,18 @@ echo.
 echo How Many Row{s} Of Barley Do You Want To Plant? Please Type An Amount
 echo.
 echo.
-set /p plantbarley=Barley To Plant : 
-if not defined plantbarley (
+set /p plantebarley=Barley To Plant : 
+if not defined plantebarley (
 goto plantbarley
 )
-if %plantbarley% LSS 1 (
+if %plantebarley% LSS 1 (
 echo.
 echo.
 echo You Must Plant At Least One Row of Barley.
 pause >nul
 goto plantbarley
 )
-if %plantbarley% GTR %barley% (
+if %plantebarley% GTR %barley% (
 echo.
 echo.
 echo Sorry, You Do Not Have Enough Barley Seeds To Plant That Many Rows.
@@ -158,7 +242,7 @@ goto plantbarley
 )
 echo.
 echo.
-echo Do You Really Want To Plant %plantbarley% Row{s} Of Barley? (Y/N)
+echo Do You Really Want To Plant %plantebarley% Row{s} Of Barley? (Y/N)
 echo.
 echo.
 set /p choice13=
@@ -173,13 +257,14 @@ echo Invalid Choice, Please Try Again.
 pause >nul
 goto plantbarley
 :yplantbarley
+set /a plantebarely=%plantbarley% + %plantebarley%
 set /a barley=%barley% - %plantbarley%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
-echo %plantbarley% Row{s} Of Barley Has Been Planted.
+echo %plantebarley% Row{s} Of Barley Has Been Planted.
 pause >nul
 goto plant
 ::####################################################################
@@ -302,18 +387,24 @@ echo.
 echo Here Is A List Of Your Planted Items :
 echo.
 echo.
-echo Planted Corn : %plantcorn%
+if !plantcorn! GTR 0 (
+echo Planted Corn : !plantcorn!
 echo -----------------------------------------------------
 echo.
 echo.
+)
+if !plantwheat! GTR 0 (
 echo Planted Wheat : %plantwheat%
 echo -----------------------------------------------------
 echo.
 echo.
-echo Planted Barley : %plantbarley%
+)
+if !plantebarley! GTR 0 (
+echo Planted Barley : !plantebarley!
 echo -----------------------------------------------------
 echo.
 echo.
+)
 pause >nul
 goto harvestf
 ::####################################################################
@@ -326,8 +417,8 @@ echo.
 echo Here Is A List Of Your Current Items :
 echo.
 echo.
-if %cow% GTR 0 (
-echo Number Of Cow{s} : %cow%      Cow Feed : %cowfeed%
+if !cow! GTR 0 (
+echo Number Of Cow{s} : !cow!      Cow Feed : %cowfeed%
 echo -----------------------------------------------------
 echo.
 echo.
@@ -358,6 +449,11 @@ echo.
 )
 if %barley% GTR 0 (
 echo Barley : %barley%
+echo -----------------------------------------------------
+echo.
+)
+if !harvestcorn! GTR 0 (
+echo Harvested Corn : %harvestcorn%
 echo -----------------------------------------------------
 echo.
 )
@@ -774,7 +870,7 @@ set /p buycow=Cow{s} To Buy:
 if not defined buycow (
 goto buycow
 )
-set /a cowtotal=%buycow% * %cowprice%
+set /a cowtotal=!buycow! * %cowprice%
 if %cowtotal% LSS 1 (
 echo.
 echo.
@@ -791,7 +887,7 @@ goto buycow
 )
 echo.
 echo.
-echo Do You Really Want To Buy %buycow% Cow{s} For $%cowtotal%? (Y/N)
+echo Do You Really Want To Buy !buycow! Cow{s} For $%cowtotal%? (Y/N)
 echo.
 echo.
 set /p choice1=
@@ -813,7 +909,7 @@ echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
-echo %buycow% Cow{s} Have Been Purchased.
+echo !buycow! Cow{s} Have Been Purchased.
 pause >nul
 goto animal
 ::######################################################################
@@ -1033,14 +1129,17 @@ goto animalfeed
 
 :exit
 cls
-echo Thank You For Playing Farm Town, Made By Nicolas Hawrysh
+echo Thank You For Playing Farm Town.
 ping -n 3 127.0.0.1 >nul
 exit
 ::######################################################################
 
 :save
 cls
-(echo plantbarley=%plantbarley%)> %name%.sav
+(echo harvestwheat=%harvestwheat%)> %name%.sav
+(echo harvestbarley=%harvestbarley%)>> %name%.sav
+(echo harvestcorn=%harvestcorn%)>> %name%.sav
+(echo plantebarley=%plantbarley%)>> %name%.sav
 (echo plantwheat=%plantwheat%)>> %name%.sav
 (echo plantcorn=%plantcorn%)>> %name%.sav
 (echo corn=%corn%)>> %name%.sav
@@ -1055,6 +1154,7 @@ cls
 (echo chickenfeed=%chickenfeed%)>> %name%.sav
 (echo pigfeed=%pigfeed%)>> %name%.sav
 (echo money=%money%)>> %name%.sav
+(echo level=%level%)>> %name%.sav
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
