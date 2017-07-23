@@ -9,7 +9,7 @@ What's left is:
 -Finishing the "Harvest Crops" function (so far only harvest corn is complete)
 -Adding option to sell harvested crops
 -The entire tend to animals menu
--Adding the ability to have rase the players level
+-Adding the ability to rase the players level
 -Adding the ability to modify the players energy (optional)
 
 
