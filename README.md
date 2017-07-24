@@ -6,7 +6,7 @@ The code is around 60% complete from what it was originaly inteaded to do. A goo
 
 What's left is:
 
--Adding option to sell harvested crops
+-Finishing the Sell menu
 -The entire tend to animals menu
 -Adding the ability to rase the players level
 -Adding the ability to modify the players energy (optional)
