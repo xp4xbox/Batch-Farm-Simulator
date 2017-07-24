@@ -515,6 +515,29 @@ echo -----------------------------------------------------
 echo.
 echo.
 )
+::-------------------------------------better way to do this?---------------------------------------------
+if %cow% LSS 1 (
+if %cowfeed% GTR 0 (
+echo Number Of Cow{s} : %cow%      Cow Feed : %cowfeed%
+echo -----------------------------------------------------
+echo.
+echo.
+))
+if %chicken% LSS 1 (
+if %chickenfeed% GTR 0 (
+echo Number Of Chicken{s} : %chicken%      Chicken Feed : %chickenfeed%	
+echo -----------------------------------------------------
+echo.
+echo.
+))
+if %pig% LSS 1 (
+if %pigfeed% GTR 0 (
+echo Number Of pig{s} : %pig%      Pig Feed : %pigfeed%	
+echo -----------------------------------------------------
+echo.
+echo.
+))
+::-------------------------------------better way to do this?----------------------------------------------
 if %corn% GTR 0 (
 echo Corn : %corn%
 echo -----------------------------------------------------
