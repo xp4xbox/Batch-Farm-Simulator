@@ -6,7 +6,6 @@ The code is around 60% complete from what it was originaly inteaded to do. A goo
 
 What's left is:
 
--Finishing the "Harvest Crops" function (so far only harvest corn is complete)
 -Adding option to sell harvested crops
 -The entire tend to animals menu
 -Adding the ability to rase the players level
