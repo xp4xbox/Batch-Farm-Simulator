@@ -312,7 +312,6 @@ echo Invalid Choice, Please Try Again.
 pause >nul
 goto plant
 ::##################################################################
-
 :plantbarley
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
@@ -324,13 +323,6 @@ echo.
 echo.
 set /p plantebarley=Barley To Plant : 
 if not defined plantebarley (
-goto plantbarley
-)
-if %plantebarley% LSS 1 (
-echo.
-echo.
-echo You Must Plant At Least One Row of Barley.
-pause >nul
 goto plantbarley
 )
 if %plantebarley% GTR %barley% (
@@ -382,13 +374,6 @@ set /p plantewheat=Wheat To Plant :
 if not defined plantewheat (
 goto plantwheat
 )
-if %plantewheat% LSS 1 (
-echo.
-echo.
-echo You Must Plant At Least One Row of Wheat.
-pause >nul
-goto plantwheat
-)
 if %plantewheat% GTR %wheat% (
 echo.
 echo.
@@ -436,13 +421,6 @@ echo.
 echo.
 set /p plantecorn=Corn To Plant : 
 if not defined plantecorn (
-goto plantcorn
-)
-if %plantecorn% LSS 1 (
-echo.
-echo.
-echo You Must Plant At Least One Row of Corn.
-pause >nul
 goto plantcorn
 )
 if %plantecorn% GTR %corn% (
@@ -673,13 +651,6 @@ set /p sellcorn=Corn To Sell:
 if not defined sellcorn (
 goto sellcorn
 )
-if %harvestcorn% LSS 1 (
-echo.
-echo.
-echo You Must Sell At Least 1 Bushel!
-pause >nul
-goto sellcorn
-)
 if %sellcorn% GTR %harvestcorn% (
 echo.
 echo.
@@ -733,13 +704,6 @@ set /p sellwheat=Wheat To Sell:
 if not defined sellwheat (
 goto sellwheat
 )
-if %harvestwheat% LSS 1 (
-echo.
-echo.
-echo You Must Sell At Least 1 Bushel!
-pause >nul
-goto sellwheat
-)
 if %sellwheat% GTR %harvestwheat% (
 echo.
 echo.
@@ -791,13 +755,6 @@ echo.
 echo.
 set /p sellbarley=Barley To Sell: 
 if not defined sellbarley (
-goto sellbarley
-)
-if %harvestbarley% LSS 1 (
-echo.
-echo.
-echo You Must Sell At Least 1 Bushel!
-pause >nul
 goto sellbarley
 )
 if %sellbarley% GTR %harvestbarley% (
@@ -910,13 +867,6 @@ if not defined buybarley (
 goto buybarley
 )
 set /a barleytotal=%buybarley% * %barleyprice%
-if %barleytotal% LSS 1 (
-echo.
-echo.
-echo You Must Choose At Least One Row Of Barley Seed.
-pause >nul
-goto buybarley
-)
 if %barleytotal% GTR %money% (
 echo.
 echo.
@@ -970,13 +920,6 @@ if not defined buywheat (
 goto buywheat
 )
 set /a wheattotal=%buywheat% * %wheatprice%
-if %wheattotal% LSS 1 (
-echo.
-echo.
-echo You Must Choose At Least One Row Of Wheat Seed.
-pause >nul
-goto buywheat
-)
 if %wheattotal% GTR %money% (
 echo.
 echo.
@@ -1030,13 +973,6 @@ if not defined buycorn (
 goto buycorn
 )
 set /a corntotal=%buycorn% * %cornprice%
-if %corntotal% LSS 1 (
-echo.
-echo.
-echo You Must Choose At Least One Row Of Corn Seed.
-pause >nul
-goto buycorn
-)
 if %corntotal% GTR %money% (
 echo.
 echo.
@@ -1118,13 +1054,6 @@ if not defined buypig (
 goto buypig
 )
 set /a pigtotal=%buypig% * %pigprice%
-if %pigtotal% LSS 1 (
-echo.
-echo.
-echo You Must Choose At Least One Pig.
-pause >nul
-goto buypig
-)
 if %pigtotal% GTR %money% (
 echo.
 echo.
@@ -1178,13 +1107,6 @@ if not defined buychicken (
 goto buychicken
 )
 set /a chickentotal=%buychicken% * %chickenprice%
-if %chickentotal% LSS 1 (
-echo.
-echo.
-echo You Must Choose At Least One Chicken.
-pause >nul
-goto buychicken
-)
 if %chickentotal% GTR %money% (
 echo.
 echo.
@@ -1220,7 +1142,6 @@ echo %buychicken% Chicken{s} Have Been Purchased.
 pause >nul
 goto animal
 ::######################################################################
-
 :buycow
 set cowprice=100
 cls
@@ -1239,13 +1160,6 @@ if not defined buycow (
 goto buycow
 )
 set /a cowtotal=%buycow% * %cowprice%
-if %cowtotal% LSS 1 (
-echo.
-echo.
-echo You Must Choose At Least One Cow.
-pause >nul
-goto buycow
-)
 if %cowtotal% GTR %money% (
 echo.
 echo.
@@ -1327,13 +1241,6 @@ if not defined buypigfeed (
 goto buypigfeed
 )
 set /a pigfeedtotal=%buypigfeed% * %pigfeedprice%
-if %pigfeedtotal% LSS 1 (
-echo.
-echo.
-echo You Must Choose At Least One Serving Of Pig Feed.
-pause >nul
-goto buypigfeed
-)
 if %pigfeedtotal% GTR %money% (
 echo.
 echo.
@@ -1369,7 +1276,6 @@ echo %buypigfeed% Serving{s} Of Pig Feed Have Been Purchased.
 pause >nul
 goto animalfeed
 ::######################################################################
-
 :buychickenfeed
 set chickenfeedprice=3
 cls
@@ -1388,13 +1294,6 @@ if not defined buychickenfeed (
 goto buychickenfeed
 )
 set /a chickenfeedtotal=%buychickenfeed% * %chickenfeedprice%
-if %chickenfeedtotal% LSS 1 (
-echo.
-echo.
-echo You Must Choose At Least One Serving Of Chicken Feed.
-pause >nul
-goto buychickenfeed
-)
 if %chickenfeedtotal% GTR %money% (
 echo.
 echo.
@@ -1430,7 +1329,6 @@ echo %buychickenfeed% Serving{s} Of Chicken Feed Have Been Purchased.
 pause >nul
 goto animalfeed
 ::######################################################################
-
 :buycowfeed
 set cowfeedprice=7
 cls
@@ -1449,13 +1347,6 @@ if not defined buycowfeed (
 goto buycowfeed
 )
 set /a cowfeedtotal=%buycowfeed% * %cowfeedprice%
-if %cowfeedtotal% LSS 1 (
-echo.
-echo.
-echo You Must Choose At Least One Serving Of Cow Feed.
-pause >nul
-goto buycowfeed
-)
 if %cowfeedtotal% GTR %money% (
 echo.
 echo.
