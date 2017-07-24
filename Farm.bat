@@ -19,7 +19,7 @@ goto load
 ) else (
 goto sets
 )
-
+::default sets
 :sets
 cls
 set harvestwheat=0
@@ -69,7 +69,7 @@ if not defined M (
 goto main
 )
 if "%M%"=="2" goto harvestf
-if "%M%"=="1" goto store
+if "%M%"=="1" goto storeM
 if "%M%"=="4" goto inventory
 if "%M%"=="6" goto exit
 if "%M%"=="5" goto save
@@ -105,9 +105,6 @@ echo.
 echo Invalid Choice, Please Try Again.
 pause >nul
 goto harvestf
-
-
-
 ::####################################################################
 :harvestt
 cls
@@ -579,14 +576,273 @@ echo.
 pause >nul
 goto main
 ::######################################################################
-
+:storeM
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Welcome To The Store, What Would You Like To Do?
+echo.
+echo.
+echo 1) Buy
+echo 2) Sell
+echo 3) Back To Main Menu
+echo.
+echo.
+set /p StoreMC=
+if not defined StoreMC (
+goto storeM
+)
+if "%StoreMC%"=="1" goto store
+if "%StoreMC%"=="2" goto sell
+if "%StoreMC%"=="3" goto main
+echo.
+echo Invalid Choice, Please Try Again!
+pause >nul
+goto storeM
+::######################################################################
+:sell
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Welcome To The Store, What Would You Like To Sell?
+echo.
+echo.
+echo 1) Crops
+echo 2) Dairy
+echo 3) Meat
+echo 4) Back To Main Menu
+echo.
+echo.
+set /p sellC=
+if not defined SellC (
+goto sell
+)
+if "%sellC%"=="1" goto cropsS
+if "%sellC%"=="4" goto main
+echo.
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto sell
+::######################################################################
+:cropsS
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Which Crops Would You Like To Sell?
+echo.
+echo.
+echo 1) Corn
+echo 2) Wheat
+echo 3) Barley
+echo 4) Back To Store
+echo.
+echo.
+set /p cropsC=
+if not defined cropsC (
+goto cropsS
+)
+if "%cropsC%"=="1" goto sellcorn
+if "%cropsC%"=="2" goto sellwheat
+if "%cropsC%"=="3" goto sellbarley
+if "%cropsC%"=="4" goto sell
+echo.
+echo Invalid Choice. Please Try Again.
+pause >nul
+goto cropsS
+::######################################################################
+:sellcorn
+set cornsellprice=10
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Corn Is Currently Worth $%cornsellprice% Per Bushel {Row}.
+echo.
+echo.
+echo How Much Corn Would You Like To Sell? Please Type An Amount.
+echo.
+echo.
+set /p sellcorn=Corn To Sell: 
+if not defined sellcorn (
+goto sellcorn
+)
+if %harvestcorn% LSS 1 (
+echo.
+echo.
+echo You Must Sell At Least 1 Bushel!
+pause >nul
+goto sellcorn
+)
+if %sellcorn% GTR %harvestcorn% (
+echo.
+echo.
+echo You Do Not Have Enough Corn To Sell %sellcorn% Bushel{s}. You Currently Have %harvestcorn% Bushels{s}.
+pause >nul
+goto sellcorn
+)
+set /a cornsellmoney=%sellcorn% * %cornsellprice%
+echo.
+echo.
+echo Do You Really Want To Sell %sellcorn% Bushel{s} Of Corn For $%cornsellmoney%? (Y/N)
+echo.
+echo.
+set /p choice17=
+if not defined choice17 (
+goto sellcorn
+)
+echo.
+echo.
+if "%choice17%"=="y" goto ysellcorn
+if "%choice17%"=="n" set cornsellmoney=0 & goto cropsS
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto sellcorn
+:ysellcorn
+set /a harvestcorn=%harvestcorn% - %sellcorn%
+set /a money=%money% + %cornsellmoney%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo %sellcorn% Bushel{s} Of Corn Have Been Sold.
+pause >nul
+goto cropsS
+::######################################################################
+:sellwheat
+set wheatsellprice=5
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Wheat Is Currently Worth $%wheatsellpric% Per Bushel {Row}.
+echo.
+echo.
+echo How Much Wheat Would You Like To Sell? Please Type An Amount.
+echo.
+echo.
+set /p sellwheat=Wheat To Sell: 
+if not defined sellwheat (
+goto sellwheat
+)
+if %harvestwheat% LSS 1 (
+echo.
+echo.
+echo You Must Sell At Least 1 Bushel!
+pause >nul
+goto sellwheat
+)
+if %sellwheat% GTR %harvestwheat% (
+echo.
+echo.
+echo You Do Not Have Enough Wheat To Sell %sellwheat% Bushel{s}. You Currently Have %harvestwheat% Bushels{s}.
+pause >nul
+goto sellwheat
+)
+set /a wheatsellmoney=%sellwheat% * %wheatsellprice%
+echo.
+echo.
+echo Do You Really Want To Sell %sellwheat% Bushel{s} Of Wheat For $%wheatsellmoney%? (Y/N)
+echo.
+echo.
+set /p choice18=
+if not defined choice18 (
+goto sellwheat
+)
+echo.
+echo.
+if "%choice18%"=="y" goto ysellwheat
+if "%choice18%"=="n" set wheatsellmoney=0 & goto cropsS
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto sellwheat
+:ysellwheat
+set /a harvestwheat=%harvestwheat% - %sellwheat%
+set /a money=%money% + %wheatsellmoney%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo %sellwheat% Bushel{s} Of Wheat Have Been Sold.
+pause >nul
+goto cropsS
+::######################################################################
+:sellbarley
+set barleysellprice=6
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Barley Is Currently Worth $%barleysellprice% Per Bushel {Row}.
+echo.
+echo.
+echo How Much Barley Would You Like To Sell? Please Type An Amount.
+echo.
+echo.
+set /p sellbarley=Barley To Sell: 
+if not defined sellbarley (
+goto sellbarley
+)
+if %harvestbarley% LSS 1 (
+echo.
+echo.
+echo You Must Sell At Least 1 Bushel!
+pause >nul
+goto sellbarley
+)
+if %sellbarley% GTR %harvestbarley% (
+echo.
+echo.
+echo You Do Not Have Enough Barley To Sell %sellbarley% Bushel{s}. You Currently Have %harvestbarley% Bushels{s}.
+pause >nul
+goto sellbarley
+)
+set /a barleysellmoney=%sellbarley% * %barleysellprice%
+echo.
+echo.
+echo Do You Really Want To Sell %sellbarley% Bushel{s} Of Barley For $%barleysellmoney%? (Y/N)
+echo.
+echo.
+set /p choice18=
+if not defined choice18 (
+goto sellbarley
+)
+echo.
+echo.
+if "%choice18%"=="y" goto ysellbarley
+if "%choice18%"=="n" set barleysellmoney=0 & goto cropsS
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto sellbarley
+:ysellbarley
+set /a harvestbarley=%harvestbarley% - %sellbarley%
+set /a money=%money% + %barleysellmoney%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo %sellbarley% Bushel{s} Of Barley Have Been Sold.
+pause >nul
+goto cropsS
+::######################################################################
 :store
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
-echo Welcome To The Store, What Would You Like To buy?
+echo Welcome To The Store, What Would You Like To Buy?
 echo.
 echo.
 echo 1) Crops
@@ -636,7 +892,6 @@ echo Invalid Choice. Please Try Again.
 pause >nul
 goto crops
 ::####################################################################
-
 :buybarley
 set barleyprice=3
 cls
@@ -697,7 +952,6 @@ echo %buybarley% Row{s} Of Barley Seed Have Been Purchased.
 pause >nul
 goto crops
 ::######################################################################
-
 :buywheat
 set wheatprice=2
 cls
@@ -758,7 +1012,6 @@ echo %buywheat% Row{s} Of Wheat Seed Have Been Purchased.
 pause >nul
 goto crops
 ::######################################################################
-
 :buycorn
 set cornprice=6
 cls
@@ -819,7 +1072,6 @@ echo %buycorn% Row{s} Of Corn Seed Have Been Purchased.
 pause >nul
 goto crops
 ::######################################################################
-
 :animal
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
@@ -848,7 +1100,6 @@ echo Invalid Choice, Please Try Again.
 pause >nul
 goto animal
 ::######################################################################
-
 :buypig
 set pigprice=65
 cls
@@ -909,8 +1160,6 @@ echo %buypig% Pig{s} Have Been Purchased.
 pause >nul
 goto animal
 ::######################################################################
-
-
 :buychicken
 set chickenprice=37
 cls
@@ -1032,8 +1281,6 @@ echo %buycow% Cow{s} Have Been Purchased.
 pause >nul
 goto animal
 ::######################################################################
-
-
 :animalfeed
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
@@ -1062,7 +1309,6 @@ echo Invalid Choice, Please Try Again.
 pause >nul
 goto animalfeed
 ::######################################################################
-
 :buypigfeed
 set pigfeedprice=5
 cls
