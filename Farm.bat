@@ -105,6 +105,9 @@ echo.
 echo Invalid Choice, Please Try Again.
 pause >nul
 goto harvestf
+
+
+
 ::####################################################################
 :harvestt
 cls
@@ -131,6 +134,106 @@ if "%HV%"=="3" goto harvestbarley
 if "%HV%"=="4" goto harvestf
 echo.
 echo Invalid Choice, Please Try Again.
+pause >nul
+goto harvestt
+::###################################################################
+:harvestwheat
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+if %plantwheat% LSS 1 (
+echo.
+echo.
+echo.
+echo Sorry, You Do Not Have Any Wheat Planted.
+pause >nul
+goto harvestt
+)
+echo.
+echo.
+::Set timer for length until wheat is ready currently at 3 seconds
+ping -n 3 127.0.0.1 >nul
+echo The Wheat Is Now Ready.
+pause >nul
+goto harvestwheat2
+:harvestwheat2
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Do You Really Want To Harvest Your Wheat (Y/N)
+echo.
+echo.
+set /p choice15=
+if not defined choice15 (
+goto harvestwheat2
+)
+echo.
+echo.
+if "%choice15%"=="y" goto yharvestwheat
+if "%choice15%"=="n" goto harvestt
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto harvestwheat2
+:yharvestwheat
+set /a harvestwheat=%plantwheat% + %harvestwheat%
+set plantwheat=0
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Your Wheat Has Been Harvested.
+pause >nul
+goto harvestt
+::###################################################################
+:harvestbarley
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+if %plantbarley% LSS 1 (
+echo.
+echo.
+echo.
+echo Sorry, You Do Not Have Any Barley Planted.
+pause >nul
+goto harvestt
+)
+echo.
+echo.
+::Set timer for length until barley is ready currently at 3 seconds
+ping -n 3 127.0.0.1 >nul
+echo The Barley Is Now Ready.
+pause >nul
+goto harvestbarley2
+:harvestbarley2
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Do You Really Want To Harvest Your Barley (Y/N)
+echo.
+echo.
+set /p choice16=
+if not defined choice16 (
+goto harvestbarley2
+)
+echo.
+echo.
+if "%choice16%"=="y" goto yharvestbarley
+if "%choice16%"=="n" goto harvestt
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto harvestbarley2
+:yharvestbarley
+set /a harvestbarley=%plantbarley% + %harvestbarley%
+set plantbarley=0
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Your Barley Has Been Harvested.
 pause >nul
 goto harvestt
 ::###################################################################
@@ -168,13 +271,13 @@ goto harvestcorn2
 echo.
 echo.
 if "%choice14%"=="y" goto yharvestcorn
-if "%choice14%"=="n" goto harvestcorn2
+if "%choice14%"=="n" goto harvestt
 echo Invalid Choice, Please Try Again.
 pause >nul
 goto harvestcorn2
 :yharvestcorn
 set /a harvestcorn=%plantcorn% + %harvestcorn%
-set /a plantcorn=%plantcorn% - %harvestcorn%
+set plantcorn=0
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -458,6 +561,19 @@ echo.
 if %harvestcorn% GTR 0 (
 echo Harvested Corn : %harvestcorn%
 echo -----------------------------------------------------
+echo.
+echo.
+)
+if %harvestwheat% GTR 0 (
+echo Harvested Wheat : %harvestwheat%
+echo -----------------------------------------------------
+echo.
+echo.
+)
+if %harvestbarley% GTR 0 (
+echo Harvested Barley : %harvestbarley%
+echo -----------------------------------------------------
+echo.
 echo.
 )
 pause >nul
