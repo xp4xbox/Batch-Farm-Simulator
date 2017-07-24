@@ -278,18 +278,18 @@ echo.
 echo How Many Row{s} Of Wheat Do You Want To Plant? Please Type An Amount
 echo.
 echo.
-set /p plantwheat=Wheat To Plant : 
-if not defined plantwheat (
+set /p plantewheat=Wheat To Plant : 
+if not defined plantewheat (
 goto plantwheat
 )
-if %plantwheat% LSS 1 (
+if %plantewheat% LSS 1 (
 echo.
 echo.
 echo You Must Plant At Least One Row of Wheat.
 pause >nul
 goto plantwheat
 )
-if %plantwheat% GTR %wheat% (
+if %plantewheat% GTR %wheat% (
 echo.
 echo.
 echo Sorry, You Do Not Have Enough Wheat Seeds To Plant That Many Rows.
@@ -298,7 +298,7 @@ goto plantwheat
 )
 echo.
 echo.
-echo Do You Really Want To Plant %plantwheat% Row{s} Of Wheat? (Y/N)
+echo Do You Really Want To Plant %plantewheat% Row{s} Of Wheat? (Y/N)
 echo.
 echo.
 set /p choice12=
@@ -313,13 +313,14 @@ echo Invalid Choice, Please Try Again.
 pause >nul
 goto plantwheat
 :yplantwheat
-set /a wheat=%wheat% - %plantwheat%
+set /a wheat=%wheat% - %plantewheat%
+set /a plantwheat=%plantwheat% + %plantewheat%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
-echo %plantwheat% Row{s} Of Wheat Has Been Planted.
+echo %plantewheat% Row{s} Of Wheat Has Been Planted.
 pause >nul
 goto plant
 ::####################################################################
@@ -333,18 +334,18 @@ echo.
 echo How Many Row{s} Of Corn Do You Want To Plant? Please Type An Amount
 echo.
 echo.
-set /p plantcorn=Corn To Plant : 
-if not defined plantcorn (
+set /p plantecorn=Corn To Plant : 
+if not defined plantecorn (
 goto plantcorn
 )
-if %plantcorn% LSS 1 (
+if %plantecorn% LSS 1 (
 echo.
 echo.
 echo You Must Plant At Least One Row of Corn.
 pause >nul
 goto plantcorn
 )
-if %plantcorn% GTR %corn% (
+if %plantecorn% GTR %corn% (
 echo.
 echo.
 echo Sorry, You Do Not Have Enough Corn Seeds To Plant That Many Rows.
@@ -353,7 +354,7 @@ goto plantcorn
 )
 echo.
 echo.
-echo Do You Really Want To Plant %plantcorn% Row{s} Of Corn? (Y/N)
+echo Do You Really Want To Plant %plantecorn% Row{s} Of Corn? (Y/N)
 echo.
 echo.
 set /p choice11=
@@ -368,13 +369,14 @@ echo Invalid Choice, Please Try Again.
 pause >nul
 goto plantcorn
 :yplantcorn
-set /a corn=%corn% - %plantcorn%
+set /a corn=%corn% - %plantecorn%
+set /a plantcorn=%plantcorn% + %plantecorn%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
-echo %plantcorn% Row{s} Of Corn Has Been Planted.
+echo %plantecorn% Row{s} Of Corn Has Been Planted.
 pause >nul
 goto plant
 ::####################################################################
@@ -450,6 +452,7 @@ echo.
 if %barley% GTR 0 (
 echo Barley : %barley%
 echo -----------------------------------------------------
+echo.
 echo.
 )
 if %harvestcorn% GTR 0 (
