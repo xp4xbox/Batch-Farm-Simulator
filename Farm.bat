@@ -25,7 +25,7 @@ goto sets
 cls
 set harvestwheat=0
 set harvestbarley=0
-set plantbarley=0
+set plantebarley=0
 set harvestcorn=0
 set plant
 set corn=0
