@@ -73,10 +73,115 @@ if "%M%"=="1" goto storeM
 if "%M%"=="4" goto inventory
 if "%M%"=="6" goto exit
 if "%M%"=="5" goto save
+if "%M%"=="3" goto tanimals
 echo.
 echo Invalid Choice, Please Try Again!
 pause >nul
 goto main
+::######################################################################
+:tanimals
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Welcome To The Tend To Animals Menu, What Would You Like To Do?
+echo.
+echo.
+echo 1) Feed Animals
+echo 2) Collect Milk
+echo 3) Collect Meat
+echo 4) Collect Eggs
+echo 5) Back To Main Menu
+echo.
+echo.
+set /p choice19=
+if not defined choice19 (
+goto tanimals
+)
+if "%choice19%"=="1" goto feedA
+::if "%choice19%"=="2" goto collectM
+::if "%choice19%"=="3" goto collectMe
+::if "%choice19%"=="4" goto collectEg
+if "%choice19%"=="5" goto main
+echo.
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto tanimals
+::######################################################################
+:feedA
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Who Would You Like To Feed?
+echo.
+echo.
+echo 1) Cows
+echo 2) Chickens
+echo 3) Pigs
+echo 4) Back To Tend To Animals
+echo.
+echo.
+set /p choice20=
+if not defined choice20 (
+goto feedA
+)
+if "%choice20%"=="1" goto feedCow
+::if "%choice20%"=="2" goto collectD
+::if "%choice20%"=="3" goto collectM
+if "%choice20%"=="4" goto tanimals
+echo.
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto feedA
+::######################################################################
+:feedCow
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+if "%cow%"=="0" (
+echo Sorry, You Currently Have No Cows.
+pause >nul
+goto feedA
+)
+set /a numcowservings=%cow% * 15
+:: unfortunately this function cannot be set inside the if statement so I need to set the remaining feed outside
+set /a remaningcfeed=%numcowservings% - %cowfeed%
+if %remaningcfeed% LSS 1 set "remaningcfeed="
+::--------------------------------------------------------------
+if %numcowservings% GTR %cowfeed% (
+echo Sorry, You Do Not Currently Have Enough Feed To Feed All Of Your Cows. Please Purchase %remaningcfeed% More Servings.
+pause >nul
+goto feedA
+)
+echo Do You Reall Want To Feed %cow% Cow{s} With %numcowservings% Servings? (Y/N)
+echo.
+echo.
+set /p choice21=
+if not defined choice21 (
+goto feedCow
+)
+echo.
+echo.
+if "%choice21%"=="y" goto yfeedcow
+if "%choice21%"=="n" goto feedA
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto feedCow
+:yfeedcow
+set /a cowfeed=%cowfeed% - %numcowservings%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Your Cow{s} Have Been Fed.
+pause >nul
+goto FeedA
 ::######################################################################
 :harvestf
 cls
