@@ -1,4 +1,5 @@
 ::Farm Town Is An Open Source Batch Farm Simulator Made by Nicolas Hawrysh
+::To level up, you must buy 2 pigs, 2 chickens and 10 rows of corn.
 @echo off
 TITLE Farm Town
 color 1f
@@ -25,6 +26,9 @@ goto sets
 ::default sets
 :sets
 cls
+set cornH=0
+set chickenH=0
+set pigH=0
 set pigfed=0
 set chickfed=0
 set eggs=0
@@ -56,8 +60,11 @@ for /f %%a in (%name%.sav) do set %%a
 goto main
 ::######################################################################
 :main
-set M=
+::check to see if user can level up to level 2
+if %level% EQU 1 goto checklevel1up
+:back2main
 cls
+set M=
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
@@ -1435,6 +1442,8 @@ goto buycorn
 :ybuycorn
 set /a corn=%buycorn% + %corn%
 set /a money=%money% - %corntotal%
+:: log to corn buy history
+set /a cornH=%cornH% + %buycorn%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1516,6 +1525,8 @@ goto buypig
 :ybuypig
 set /a pig=%buypig% + %pig%
 set /a money=%money% - %pigtotal%
+::add to total pig buy history
+set /a pigH=%pigH% + %buypig%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1569,6 +1580,8 @@ goto buychicken
 :ybuychicken
 set /a chicken=%buychicken% + %chicken%
 set /a money=%money% - %chickentotal%
+::add to total chicken buy history
+set /a chickenH=%chickenH% + %buychicken%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1579,12 +1592,17 @@ pause >nul
 goto animal
 ::######################################################################
 :buycow
-set cowprice=100
 cls
+set cowprice=100
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
+if %level% LSS 2 (
+echo Sorry, You Must Be At Least Level 2 To Buy A Cow.
+pause >nul
+goto main
+)
 echo Cows Are Currently $100 Each
 echo.
 echo.
@@ -1829,6 +1847,9 @@ exit
 :save
 cls
 (echo pigfed=%pigfed%)> %name%.sav
+(echo cornH=%cornH%)>> %name%.sav
+(echo pigH=%pigH%)>> %name%.sav
+(echo chickenH=%chickenH%)>> %name%.sav
 (echo chickfed=%chickfed%)>> %name%.sav
 (echo eggs=%eggs%)>> %name%.sav
 (echo cowfed=%cowfed%)>> %name%.sav
@@ -1858,5 +1879,20 @@ echo.
 echo.
 echo Your Game Has Been Saved
 pause >nul
-goto main	
+goto main
+::######################################################################
+:checklevel1up
+cls
+if not %level% EQU 1 goto back2main
+if not %chickenH% GEQ 2 goto back2main
+if not %pigH% GEQ 2 goto back2main
+if not %cornH% GEQ 10 goto back2main
+set level=2
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Level Up!
+pause >nul
+goto back2main
 ::######################################################################
