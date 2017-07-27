@@ -1,7 +1,10 @@
+::Farm Town Is An Open Source Batch Farm Simulator Made by Nicolas Hawrysh
 @echo off
 TITLE Farm Town
 color 1f
 :start
+::change directory to userprofile to load/save save file
+cd \ & cd /d %userprofile%
 cls
 echo Please Type Your Name To Continue :
 echo.
@@ -22,6 +25,8 @@ goto sets
 ::default sets
 :sets
 cls
+set milk=0
+set cowfed=0
 set harvestwheat=0
 set harvestbarley=0
 set plantwheat=0
@@ -100,12 +105,47 @@ if not defined choice19 (
 goto tanimals
 )
 if "%choice19%"=="1" goto feedA
-::if "%choice19%"=="2" goto collectM
+if "%choice19%"=="2" goto collectM
 ::if "%choice19%"=="3" goto collectMe
 ::if "%choice19%"=="4" goto collectEg
 if "%choice19%"=="5" goto main
 echo.
 echo Invalid Choice, Please Try Again.
+pause >nul
+goto tanimals
+::######################################################################
+:collectM
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+if %cowfed% LSS 1 (
+echo Sorry, Your Cows Must Be Fed First.
+pause >nul
+goto tanimals
+)
+echo Do You Really Want to Milk Your Cows For %cowfed% Barrel{s} Of Milk? Y/N
+echo.
+echo.
+set /p choice23=
+if not defined choice23 goto collectM
+echo.
+echo.
+if "%choice23%"=="y" goto ycollectM
+if "%choice23%"=="n" goto tanimals
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto collectM
+:ycollectM
+set /a milk=%milk% + %cowfed%
+set cowfed=0
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo You Have Collected Your Milk.
 pause >nul
 goto tanimals
 ::######################################################################
@@ -143,22 +183,28 @@ echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
-if "%cow%"=="0" (
-echo Sorry, You Currently Have No Cows.
+set /a cow2feed=%cow% - %cowfed%
+if "%cow2feed%"=="0" (
+echo Sorry, You Currently Have No Cows To Feed.
 pause >nul
 goto feedA
 )
-set /a numcowservings=%cow% * 15
+::determine # of cows to feed
+
+set /a numcowservings=%cow2feed% * 15
 :: unfortunately this function cannot be set inside the if statement so I need to set the remaining feed outside
 set /a remaningcfeed=%numcowservings% - %cowfeed%
 if %remaningcfeed% LSS 1 set "remaningcfeed="
 ::--------------------------------------------------------------
 if %numcowservings% GTR %cowfeed% (
-echo Sorry, You Do Not Currently Have Enough Feed To Feed All Of Your Cows. Please Purchase %remaningcfeed% More Servings.
+echo Sorry, You Do Not Currently Have Enough Cow Feed To Feed %cow2feed% Cows. Please Purchase %remaningcfeed% More Servings.
 pause >nul
 goto feedA
 )
-echo Do You Reall Want To Feed %cow% Cow{s} With %numcowservings% Servings? (Y/N)
+echo You Currently Have %cow2feed% Cow{s} That Require Feeding Of %cow% Cow{s}.
+echo.
+echo.
+echo Do You Really Want To Feed %cow2feed% Cow{s} With %numcowservings% Servings? (Y/N)
 echo.
 echo.
 set /p choice21=
@@ -174,6 +220,7 @@ pause >nul
 goto feedCow
 :yfeedcow
 set /a cowfeed=%cowfeed% - %numcowservings%
+set /a cowfed=%cowfed% + %cow2feed%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -679,6 +726,12 @@ echo -----------------------------------------------------
 echo.
 echo.
 )
+if %milk% GTR 0 (
+echo Barrel{s} Of Milk : %milk%
+echo -----------------------------------------------------
+echo.
+echo.
+)
 pause >nul
 goto main
 ::######################################################################
@@ -718,7 +771,7 @@ echo Welcome To The Store, What Would You Like To Sell?
 echo.
 echo.
 echo 1) Crops
-echo 2) Dairy
+echo 2) Milk
 echo 3) Meat
 echo 4) Back To Main Menu
 echo.
@@ -728,9 +781,66 @@ if not defined SellC (
 goto sell
 )
 if "%sellC%"=="1" goto cropsS
+if "%sellC%"=="2" goto sellM
 if "%sellC%"=="4" goto main
 echo.
 echo Invalid Choice, Please Try Again.
+pause >nul
+goto sell
+::######################################################################
+:sellM
+set milksellprice=125
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+if %milk% LSS 1 (
+echo Sorry, You Currently Have No Milk To Sell.
+pause >nul
+goto sell
+)
+echo Milk Is Currently Worth $%milksellprice% Per Barrel.
+echo.
+echo.
+echo How Much Milk Would You Like To Sell? Please Type An Amount.
+echo.
+echo.
+set /p sellmilk=Milk To Sell: 
+if not defined sellmilk (
+goto sellM
+)
+if %sellmilk% GTR %milk% (
+echo.
+echo.
+echo You Do Not Have Enough Milk To Sell %sellmilk% Barrels{s}. You Currently Have %milk% Barrels{s}.
+pause >nul
+goto sellM
+)
+echo.
+echo.
+set /a milkincome=%milksellprice% * %sellmilk%
+echo Do You Really Want To Sell %sellmilk% Barrel{s} Milk For $%milkincome%? Y/N
+echo.
+echo.
+set /p choice25=
+if not defined choice25 goto sellM
+echo.
+echo.
+if "%choice25%"=="y" goto ysellmilk
+if "%choice25%"=="n" goto sell
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto sellM
+:ysellmilk
+set /a milk=%milk% - %sellmilk%
+set /a money=%money% + %milkincome%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo You Have Sold Your Milk.
 pause >nul
 goto sell
 ::######################################################################
@@ -1520,7 +1630,9 @@ exit
 
 :save
 cls
-(echo harvestwheat=%harvestwheat%)> %name%.sav
+(echo cowfed=%cowfed%)> %name%.sav
+(echo milk=%milk%)>> %name%.sav
+(echo harvestwheat=%harvestwheat%)>> %name%.sav
 (echo harvestbarley=%harvestbarley%)>> %name%.sav
 (echo harvestcorn=%harvestcorn%)>> %name%.sav
 (echo plantbarley=%plantbarley%)>> %name%.sav
