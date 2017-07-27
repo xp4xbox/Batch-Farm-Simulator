@@ -25,6 +25,8 @@ goto sets
 ::default sets
 :sets
 cls
+set chickfed=0
+set eggs=0
 set milk=0
 set cowfed=0
 set harvestwheat=0
@@ -95,8 +97,8 @@ echo.
 echo.
 echo 1) Feed Animals
 echo 2) Collect Milk
-echo 3) Collect Meat
-echo 4) Collect Eggs
+echo 3) Collect Eggs
+echo 4) Collect Meat
 echo 5) Back To Main Menu
 echo.
 echo.
@@ -106,11 +108,47 @@ goto tanimals
 )
 if "%choice19%"=="1" goto feedA
 if "%choice19%"=="2" goto collectM
-::if "%choice19%"=="3" goto collectMe
-::if "%choice19%"=="4" goto collectEg
+if "%choice19%"=="3" goto collectEgg
+::if "%choice19%"=="4" goto collectMeat
 if "%choice19%"=="5" goto main
 echo.
 echo Invalid Choice, Please Try Again.
+pause >nul
+goto tanimals
+::######################################################################
+:collectEgg
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+if %chickfed% LSS 1 (
+echo Sorry, Your Chicken{s} Must Be Fed First.
+pause >nul
+goto tanimals
+)
+set /a numofegg=%chickfed% * 2
+echo Do You Really Want to Collect %numofegg% Dozen Eggs? Y/N
+echo.
+echo.
+set /p choice27=
+if not defined choice27 goto collectEgg
+echo.
+echo.
+if "%choice27%"=="y" goto ycollectEgg
+if "%choice27%"=="n" goto tanimals
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto collectEgg
+:ycollectEgg
+set /a eggs=%eggs% + %numofegg%
+set chickfed=0
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo You Have Collected Your Eggs.
 pause >nul
 goto tanimals
 ::######################################################################
@@ -169,13 +207,62 @@ if not defined choice20 (
 goto feedA
 )
 if "%choice20%"=="1" goto feedCow
-::if "%choice20%"=="2" goto collectD
+if "%choice20%"=="2" goto feedChick
 ::if "%choice20%"=="3" goto collectM
 if "%choice20%"=="4" goto tanimals
 echo.
 echo Invalid Choice, Please Try Again.
 pause >nul
 goto feedA
+::######################################################################
+:feedChick
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+set /a chick2feed=%chicken% - %chickfed%
+if "%chick2feed%"=="0" (
+echo Sorry, You Currently Have No Chickens To Feed.
+pause >nul
+goto feedA
+)
+::determine # of chickens to feed
+
+set /a numchickservings=%chick2feed% * 2
+set /a remaningchickfeed=%numchickservings% - %chickenfeed%
+if %remaningchickfeed% LSS 1 set "remaningchickfeed="
+if %numchickservings% GTR %chickenfeed% (
+echo Sorry, You Do Not Currently Have Enough Chicken Feed To Feed %chick2feed% Chickens. Please Purchase %remaningchickfeed% More Servings.
+pause >nul
+goto feedA
+)
+echo You Currently Have %chick2feed% Chicken{s} That Require Feeding Of %chicken% Chickens{s}.
+echo.
+echo.
+echo Do You Really Want To Feed %chick2feed% Chicken{s} With %numchickservings% Servings? (Y/N)
+echo.
+echo.
+set /p choice26=
+if not defined choice26 goto feedChick
+echo.
+echo.
+if "%choice26%"=="y" goto yfeedchick
+if "%choice26%"=="n" goto feedA
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto feedChick
+:yfeedchick
+set /a chickenfeed=%chickenfeed% - %numchickservings%
+set /a chickfed=%chickfed% + %chick2feed%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Your Chicken{s} Have Been Fed.
+pause >nul
+goto FeedA
 ::######################################################################
 :feedCow
 cls
@@ -732,6 +819,12 @@ echo -----------------------------------------------------
 echo.
 echo.
 )
+if %eggs% GTR 0 (
+echo Dozen Eggs : %eggs%
+echo -----------------------------------------------------
+echo.
+echo.
+)
 pause >nul
 goto main
 ::######################################################################
@@ -772,8 +865,9 @@ echo.
 echo.
 echo 1) Crops
 echo 2) Milk
-echo 3) Meat
-echo 4) Back To Main Menu
+echo 3) Eggs
+echo 4) Meat
+echo 5) Back To Main Menu
 echo.
 echo.
 set /p sellC=
@@ -782,9 +876,64 @@ goto sell
 )
 if "%sellC%"=="1" goto cropsS
 if "%sellC%"=="2" goto sellM
-if "%sellC%"=="4" goto main
+if "%sellC%"=="3" goto sellE
+if "%sellC%"=="5" goto main
 echo.
 echo Invalid Choice, Please Try Again.
+pause >nul
+goto sell
+::######################################################################
+:sellE
+set eggsellprice=3
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+if %eggs% LSS 1 (
+echo Sorry, You Currently Have No Eggs To Sell.
+pause >nul
+goto sell
+)
+echo A Dozen Eggs Is Currently Worth $%eggsellprice%.
+echo.
+echo.
+echo How Many Dozen Eggs Would You Like To Sell? Please Type An Amount.
+echo.
+echo.
+set /p sellegg=Eggs To Sell: 
+if not defined sellegg goto sellE
+if %sellegg% GTR %eggs% (
+echo.
+echo.
+echo You Do Not Have Enough Eggs To Sell %selleggs% Dozen. You Currently Have %eggs% Dozen.
+pause >nul
+goto sellE
+)
+echo.
+echo.
+set /a eggincome=%eggsellprice% * %sellegg%
+echo Do You Really Want To Sell %sellegg% Dozen Eggs For $%eggincome%? Y/N
+echo.
+echo.
+set /p choice28=
+if not defined choice28 goto sellE
+echo.
+echo.
+if "%choice28%"=="y" goto yselleggs
+if "%choice28%"=="n" goto sell
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto sellE
+:yselleggs
+set /a eggs=%eggs% - %sellegg%
+set /a money=%money% + %eggincome%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo You Have Sold Your Eggs.
 pause >nul
 goto sell
 ::######################################################################
@@ -1515,13 +1664,13 @@ pause >nul
 goto animalfeed
 ::######################################################################
 :buychickenfeed
-set chickenfeedprice=3
+set chickenfeedprice=2
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
-echo Chicken Feed Is Currently $3 Per Serving.
+echo Chicken Feed Is Currently $2 Per Serving.
 echo.
 echo.
 echo How Much Chicken Feed Would You Like To Buy? Please Type An Amount.
@@ -1630,7 +1779,9 @@ exit
 
 :save
 cls
-(echo cowfed=%cowfed%)> %name%.sav
+(echo chickfed=%chickfed%)> %name%.sav
+(echo eggs=%eggs%)>> %name%.sav
+(echo cowfed=%cowfed%)>> %name%.sav
 (echo milk=%milk%)>> %name%.sav
 (echo harvestwheat=%harvestwheat%)>> %name%.sav
 (echo harvestbarley=%harvestbarley%)>> %name%.sav
