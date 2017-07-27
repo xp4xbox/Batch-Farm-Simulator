@@ -7,7 +7,7 @@ The code is around 80% complete from what it was originaly inteaded to do. And i
 What's left is:
 
 -Finishing the sell menu and tend to animals menu.
--Adding the ability to rase the players level past level 2
+-Adding the ability to rase the players level past level 2.
 -Adding the ability to modify the players energy.
 
 
