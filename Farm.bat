@@ -53,12 +53,38 @@ set pig=0
 set cowfeed=0
 set chickenfeed=0
 set pigfeed=0
-goto main
+goto setdefaultvalues
 
 :load
 cls
 for /f %%a in (%name%.sav) do set %%a
-goto main
+goto setdefaultvalues
+
+:setdefaultvalues
+set beefsellprice=12
+set eggsellprice=3
+set milksellprice=125
+set cornsellprice=10
+set wheatsellprice=5
+set barleysellprice=6
+
+set barleyprice=3
+set wheatprice=2
+set cornprice=6
+set pigprice=65
+set chickenprice=37
+set cowprice=100
+set pigfeedprice=5
+set chickenfeedprice=2
+set cowfeedprice=7
+
+set feedpercow=15
+set feedperchick=2
+set feedperpig=10
+
+set dozeneggsperchick=2
+set milkbarrelspercow=1
+set containersbeefpercow=4
 ::######################################################################
 :main
 ::check to see if user can level up to level 2
@@ -180,7 +206,7 @@ echo Sorry, You Do Not Have Enough Fed Cows. You Currently Have %cowfed% Fed Cow
 pause >nul
 goto meatCow
 )
-set /a meat2collectC=%meat2collect% * 4
+set /a meat2collectC=%meat2collect% * %containersbeefpercow%
 echo Do You Really Want to Butcher %meat2collect% Cow{s} For %meat2collectC% Containers Of Beef? Y/N
 echo.
 echo.
@@ -222,7 +248,7 @@ echo Sorry, Your Chicken{s} Must Be Fed First.
 pause >nul
 goto tanimals
 )
-set /a numofegg=%chickfed% * 2
+set /a numofegg=%chickfed% * %dozeneggsperchick%
 echo Do You Really Want to Collect %numofegg% Dozen Eggs? Y/N
 echo.
 echo.
@@ -263,7 +289,8 @@ echo Sorry, Your Cows Must Be Fed First.
 pause >nul
 goto tanimals
 )
-echo Do You Really Want to Milk Your Cows For %cowfed% Barrel{s} Of Milk? Y/N
+set /a barrelsmilk=%cowfed% * %milkbarrelspercow%
+echo Do You Really Want to Milk Your Cows For %barrelsmilk% Barrel{s} Of Milk? Y/N
 echo.
 echo.
 set /p choice23=
@@ -276,7 +303,7 @@ echo Invalid Choice, Please Try Again.
 pause >nul
 goto collectM
 :ycollectM
-set /a milk=%milk% + %cowfed%
+set /a milk=%milk% + %barrelsmilk%
 set cowfed=0
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
@@ -327,7 +354,7 @@ echo Sorry, You Currently Have No Pigs To Feed.
 pause >nul
 goto feedA
 )
-set /a numpigservings=%pig2feed% * 10
+set /a numpigservings=%pig2feed% * %feedperpig%
 set /a remaningpigfeed=%numpigservings% - %pigfeed%
 if %remaningpigfeed% LSS 1 set "remaningpigfeed="
 if %numpigservings% GTR %pigfeed% (
@@ -376,7 +403,7 @@ goto feedA
 )
 ::determine # of chickens to feed
 
-set /a numchickservings=%chick2feed% * 2
+set /a numchickservings=%chick2feed% * %feedperchick%
 set /a remaningchickfeed=%numchickservings% - %chickenfeed%
 if %remaningchickfeed% LSS 1 set "remaningchickfeed="
 if %numchickservings% GTR %chickenfeed% (
@@ -425,7 +452,7 @@ goto feedA
 )
 ::determine # of cows to feed
 
-set /a numcowservings=%cow2feed% * 15
+set /a numcowservings=%cow2feed% * %feedpercow%
 :: unfortunately this function cannot be set inside the if statement so I need to set the remaining feed outside
 set /a remaningcfeed=%numcowservings% - %cowfeed%
 if %remaningcfeed% LSS 1 set "remaningcfeed="
@@ -1030,14 +1057,93 @@ goto sell
 if "%sellC%"=="1" goto cropsS
 if "%sellC%"=="2" goto sellM
 if "%sellC%"=="3" goto sellE
+if "%sellC%"=="4" goto sellMeat
 if "%sellC%"=="5" goto main
 echo.
 echo Invalid Choice, Please Try Again.
 pause >nul
 goto sell
 ::######################################################################
+:sellMeat
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo What Type Of Meat Would You Like To Sell?
+echo.
+echo.
+echo 1) Beef
+echo 2) Ham
+echo 3) Chicken
+echo 4) Back To The Store
+echo.
+echo.
+set /p sellMeatC=
+if not defined sellMeatC goto sellMeat
+if "%sellMeatC%"=="1" goto sellBeef
+if "%sellMeatC%"=="2" goto sellHam
+if "%sellMeatC%"=="3" goto sellChickenMeat
+if "%sellMeatC%"=="4" goto sell
+echo.
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto sellMeat
+::######################################################################
+:sellBeef
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+if %beef% LSS 1 (
+echo Sorry, You Currently Have No Beef To Sell.
+pause >nul
+goto sellMeat
+)
+echo A Container Of Beef Is Currently Worth $%beefsellprice%.
+echo.
+echo.
+echo How Many Containers Would You Like To Sell? Please Type An Amount.
+echo.
+echo.
+set /p sellbeef=Beef To Sell: 
+if not defined sellbeef goto sellBeef
+if %sellbeef% GTR %beef% (
+echo.
+echo.
+echo You Do Not Have Enough Beef To Sell %sellbeef% Containers. You Currently Have %beef% Containers.
+pause >nul
+goto sellBeef
+)
+echo.
+echo.
+set /a beefincome=%beefsellprice% * %sellbeef%
+echo Do You Really Want To Sell %sellbeef% Containers For $%beefincome%? Y/N
+echo.
+echo.
+set /p choice32=
+if not defined choice32 goto sellBeef
+echo.
+echo.
+if "%choice32%"=="y" goto ysellbeef
+if "%choice32%"=="n" goto sellBeef
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto sellBeef
+:ysellbeef
+set /a beef=%beef% - %sellbeef%
+set /a money=%money% + %beefincome%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo You Have Sold Your Beef.
+pause >nul
+goto sellMeat
+::######################################################################
 :sellE
-set eggsellprice=3
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1091,7 +1197,6 @@ pause >nul
 goto sell
 ::######################################################################
 :sellM
-set milksellprice=125
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1175,7 +1280,6 @@ pause >nul
 goto cropsS
 ::######################################################################
 :sellcorn
-set cornsellprice=10
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1228,7 +1332,6 @@ pause >nul
 goto cropsS
 ::######################################################################
 :sellwheat
-set wheatsellprice=5
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1281,7 +1384,6 @@ pause >nul
 goto cropsS
 ::######################################################################
 :sellbarley
-set barleysellprice=6
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1390,13 +1492,12 @@ pause >nul
 goto crops
 ::####################################################################
 :buybarley
-set barleyprice=3
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
-echo Barley Seed Is Currently $3 Per Row.
+echo Barley Seed Is Currently $%barleyprice% Per Row.
 echo.
 echo.
 echo How Many Barley Seeds Would You Like To Buy? Please Type An Amount.
@@ -1443,13 +1544,12 @@ pause >nul
 goto crops
 ::######################################################################
 :buywheat
-set wheatprice=2
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
-echo Wheat Seed Is Currently $2 Per Row.
+echo Wheat Seed Is Currently $%wheatprice% Per Row.
 echo.
 echo.
 echo How Many Wheat Seeds Would You Like To Buy? Please Type An Amount.
@@ -1496,13 +1596,12 @@ pause >nul
 goto crops
 ::######################################################################
 :buycorn
-set cornprice=6
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
-echo Corn Seed Is Currently $6 Per Row.
+echo Corn Seed Is Currently $%cornprice% Per Row.
 echo.
 echo.
 echo How Many Corn Seeds Would You Like To Buy? Please Type An Amount.
@@ -1579,13 +1678,12 @@ pause >nul
 goto animal
 ::######################################################################
 :buypig
-set pigprice=65
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
-echo Pigs Are Currently $65 Each.
+echo Pigs Are Currently $%pigprice% Each.
 echo.
 echo.
 echo How Many Pig{s} Would You Like To Buy? Please Type An Amount.
@@ -1634,13 +1732,12 @@ pause >nul
 goto animal
 ::######################################################################
 :buychicken
-set chickenprice=37
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
-echo Chickens Are Currently $37 Each.
+echo Chickens Are Currently $%chickenprice% Each.
 echo.
 echo.
 echo How Many Chicken{s} Would You Like To Buy? Please Type An Amount.
@@ -1690,7 +1787,6 @@ goto animal
 ::######################################################################
 :buycow
 cls
-set cowprice=100
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
@@ -1700,7 +1796,7 @@ echo Sorry, You Must Be At Least Level 2 To Buy A Cow.
 pause >nul
 goto main
 )
-echo Cows Are Currently $100 Each
+echo Cows Are Currently $%cowprice% Each
 echo.
 echo.
 echo How Many Cow{s} Would You Like To Buy? Please Type An Amount.
@@ -1775,13 +1871,12 @@ pause >nul
 goto animalfeed
 ::######################################################################
 :buypigfeed
-set pigfeedprice=5
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
-echo Pig Feed Is Currently $5 Per Serving.
+echo Pig Feed Is Currently $%pigfeedprice% Per Serving.
 echo.
 echo.
 echo How Much Pig Feed Would You Like To Buy? Please Type An Amount.
@@ -1801,7 +1896,7 @@ goto buypigfeed
 )
 echo.
 echo.
-echo Do You Really Want To Buy %buypigfeed% Serving{s} Of Pig Feed For $%pigfeedtotal% ? (Y/N)
+echo Do You Really Want To Buy %buypigfeed% Serving{s} Of Pig Feed For $%pigfeedtotal%? (Y/N)
 echo.
 echo.
 set /p choice7=
@@ -1828,13 +1923,12 @@ pause >nul
 goto animalfeed
 ::######################################################################
 :buychickenfeed
-set chickenfeedprice=2
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
-echo Chicken Feed Is Currently $2 Per Serving.
+echo Chicken Feed Is Currently $%chickenfeedprice% Per Serving.
 echo.
 echo.
 echo How Much Chicken Feed Would You Like To Buy? Please Type An Amount.
@@ -1854,7 +1948,7 @@ goto buychickenfeed
 )
 echo.
 echo.
-echo Do You Really Want To Buy %buychickenfeed% Serving{s} Of Chicken Feed For $%chickenfeedtotal% ? (Y/N)
+echo Do You Really Want To Buy %buychickenfeed% Serving{s} Of Chicken Feed For $%chickenfeedtotal%? (Y/N)
 echo.
 echo.
 set /p choice4=
@@ -1881,13 +1975,12 @@ pause >nul
 goto animalfeed
 ::######################################################################
 :buycowfeed
-set cowfeedprice=7
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
-echo Cow Feed Is Currently $7 Per Serving.
+echo Cow Feed Is Currently $%cowfeedprice% Per Serving.
 echo.
 echo.
 echo How Much Cow Feed Would You Like To Buy? Please Type An Amount.
