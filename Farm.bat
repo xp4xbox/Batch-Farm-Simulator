@@ -25,6 +25,7 @@ goto sets
 ::default sets
 :sets
 cls
+set pigfed=0
 set chickfed=0
 set eggs=0
 set milk=0
@@ -55,6 +56,7 @@ for /f %%a in (%name%.sav) do set %%a
 goto main
 ::######################################################################
 :main
+set M=
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -208,12 +210,59 @@ goto feedA
 )
 if "%choice20%"=="1" goto feedCow
 if "%choice20%"=="2" goto feedChick
-::if "%choice20%"=="3" goto collectM
+if "%choice20%"=="3" goto feedpig
 if "%choice20%"=="4" goto tanimals
 echo.
 echo Invalid Choice, Please Try Again.
 pause >nul
 goto feedA
+::######################################################################
+:feedpig
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+set /a pig2feed=%pig% - %pigfed%
+if "%pig2feed%"=="0" (
+echo Sorry, You Currently Have No Pigs To Feed.
+pause >nul
+goto feedA
+)
+set /a numpigservings=%pig2feed% * 10
+set /a remaningpigfeed=%numpigservings% - %pigfeed%
+if %remaningpigfeed% LSS 1 set "remaningpigfeed="
+if %numpigservings% GTR %pigfeed% (
+echo Sorry, You Do Not Currently Have Enough Pig Feed To Feed %pig2feed% Pig{s}. Please Purchase %remaningpigfeed% More Servings.
+pause >nul
+goto feedA
+)
+echo You Currently Have %pig2feed% Pig{s} That Require Feeding Of %pig% Pig{s}.
+echo.
+echo.
+echo Do You Really Want To Feed %pig2feed% Pig{s} With %numpigservings% Servings? (Y/N)
+echo.
+echo.
+set /p choice29=
+if not defined choice29 goto feedpig
+echo.
+echo.
+if "%choice29%"=="y" goto yfeedpig
+if "%choice29%"=="n" goto feedA
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto feedpig
+:yfeedpig
+set /a pigfeed=%pigfeed% - %numpigservings%
+set /a pigfed=%pigfed% + %pig2feed%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Your Pig{s} Have Been Fed.
+pause >nul
+goto FeedA
 ::######################################################################
 :feedChick
 cls
@@ -749,7 +798,7 @@ echo.
 echo.
 )
 if %pig% GTR 0 (
-echo Number Of pig{s} : %pig%      Pig Feed : %pigfeed%	
+echo Number Of Pig{s} : %pig%      Pig Feed : %pigfeed%	
 echo -----------------------------------------------------
 echo.
 echo.
@@ -1779,7 +1828,8 @@ exit
 
 :save
 cls
-(echo chickfed=%chickfed%)> %name%.sav
+(echo pigfed=%pigfed%)> %name%.sav
+(echo chickfed=%chickfed%)>> %name%.sav
 (echo eggs=%eggs%)>> %name%.sav
 (echo cowfed=%cowfed%)>> %name%.sav
 (echo milk=%milk%)>> %name%.sav
