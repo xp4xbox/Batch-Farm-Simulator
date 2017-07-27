@@ -29,6 +29,7 @@ cls
 set cornH=0
 set chickenH=0
 set pigH=0
+set beef=0
 set pigfed=0
 set chickfed=0
 set eggs=0
@@ -118,10 +119,90 @@ goto tanimals
 if "%choice19%"=="1" goto feedA
 if "%choice19%"=="2" goto collectM
 if "%choice19%"=="3" goto collectEgg
-::if "%choice19%"=="4" goto collectMeat
+if "%choice19%"=="4" goto collectMeat
 if "%choice19%"=="5" goto main
 echo.
 echo Invalid Choice, Please Try Again.
+pause >nul
+goto tanimals
+::######################################################################
+:collectMeat
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Who Would You Like To Collect Meat From?
+echo.
+echo.
+echo 1) Cow
+echo 2) Chicken
+echo 3) Pig
+echo 4) Back To Tend To Animals
+echo.
+echo.
+set /p choice30=
+if not defined choice30 goto collectMeat
+if "%choice30%"=="1" goto meatCow
+if "%choice30%"=="2" goto meatChicken
+if "%choice30%"=="3" goto meatPig
+if "%choice30%"=="4" goto tanimals
+echo.
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto collectMeat
+::######################################################################
+:meatCow
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+if %cow% LSS 1 (
+echo You Don't Have Any Cows!
+pause >nul
+goto tanimals
+)
+if %cowfed% LSS 1 (
+echo Sorry, Your Cows Must Be Fed First.
+pause >nul
+goto tanimals
+)
+echo How Many Cows Worth Of Beef Would You Like To Collect? Please Type an Amount.
+echo.
+echo.
+set /p meat2collect=
+echo.
+echo.
+if not defined meat2collect goto meatCow
+if %meat2collect% GTR %cowfed% (
+echo Sorry, You Do Not Have Enough Fed Cows. You Currently Have %cowfed% Fed Cow{s}.
+pause >nul
+goto meatCow
+)
+set /a meat2collectC=%meat2collect% * 4
+echo Do You Really Want to Butcher %meat2collect% Cow{s} For %meat2collectC% Containers Of Beef? Y/N
+echo.
+echo.
+set /p choice31=
+if not defined choice31 goto meatCow
+echo.
+echo.
+if "%choice31%"=="y" goto ycollectBe
+if "%choice31%"=="n" goto tanimals
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto meatCow
+:ycollectBe
+set /a cow=%cow% - %meat2collect%
+set /a cowfed=%cowfed% - %meat2collect%
+set /a beef=%beef% + %meat2collectC%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo You Have Collected Your Beef.
 pause >nul
 goto tanimals
 ::######################################################################
@@ -131,6 +212,11 @@ echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
+if %chicken% LSS 1 (
+echo You Don't Have Any Chickens!
+pause >nul
+goto tanimals
+)
 if %chickfed% LSS 1 (
 echo Sorry, Your Chicken{s} Must Be Fed First.
 pause >nul
@@ -167,6 +253,11 @@ echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
+if %cow% LSS 1 (
+echo You Don't Have Any Cows!
+pause >nul
+goto tanimals
+)
 if %cowfed% LSS 1 (
 echo Sorry, Your Cows Must Be Fed First.
 pause >nul
@@ -877,6 +968,12 @@ echo.
 )
 if %eggs% GTR 0 (
 echo Dozen Eggs : %eggs%
+echo -----------------------------------------------------
+echo.
+echo.
+)
+if %beef% GTR 0 (
+echo Containers Of Beef : %beef%
 echo -----------------------------------------------------
 echo.
 echo.
@@ -1847,6 +1944,7 @@ exit
 :save
 cls
 (echo pigfed=%pigfed%)> %name%.sav
+(echo beef=%beef%)>> %name%.sav
 (echo cornH=%cornH%)>> %name%.sav
 (echo pigH=%pigH%)>> %name%.sav
 (echo chickenH=%chickenH%)>> %name%.sav
