@@ -13,5 +13,5 @@ What's left is:
 INSTALATION INSTRUCTIONS:
 
 1. Restore default buffer size and window size for cmd if changed.
-2. Run Farm.bat anywere you want (it is a 100% portable application although the save file will be placed on the users userprofile directory ex. c:\users\xp4xbox)
+2. Run Farm.bat anywere you want (it is a 100% portable application although the save file will be placed in the user's userprofile directory ex. c:\users\xp4xbox)
 
