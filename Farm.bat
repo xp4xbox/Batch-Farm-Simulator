@@ -1,5 +1,9 @@
 ::Farm Town Is An Open Source Batch Farm Simulator Made by Nicolas Hawrysh
+
 ::To level up, you must buy 2 pigs, 2 chickens and 10 rows of corn.
+::To level up to level 3, you must buy at least 1 cow and 20 rows of barley.
+
+::There is a secret option that shows all history for purchased items
 @echo off
 TITLE Farm Town
 color 1f
@@ -27,6 +31,12 @@ goto sets
 ::default sets
 :sets
 cls
+set barleyH=0
+set wheatH=0
+set chickfeedH=0
+set pigfeedH=0
+set cowfeedH=0
+set cowH=0
 set cornH=0
 set chickenH=0
 set pigH=0
@@ -94,8 +104,9 @@ set containerschickperchick=2
 set containershamperpig=2
 ::######################################################################
 :main
-::check to see if user can level up to level 2
+::check to see if user can level up
 if %level% EQU 1 goto checklevel1up
+if %level% EQU 2 goto checklevel2up
 :back2main
 cls
 set M=
@@ -124,6 +135,7 @@ if "%M%"=="4" goto inventory
 if "%M%"=="6" goto exit
 if "%M%"=="5" goto save
 if "%M%"=="3" goto tanimals
+if "%M%"=="history" goto history
 echo.
 echo Invalid Choice, Please Try Again!
 pause >nul
@@ -165,6 +177,11 @@ echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
+if %level% LSS 3 (
+echo Sorry, You Must Be At Level 3 To Collect Meat From Animals.
+pause >nul 
+goto tanimals
+)
 echo Who Would You Like To Collect Meat From?
 echo.
 echo.
@@ -1767,6 +1784,7 @@ goto buybarley
 :ybuybarley
 set /a barley=%buybarley% + %barley%
 set /a money=%money% - %barleytotal%
+set /a barleyH=%barleyH% + %buybarley%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1819,6 +1837,7 @@ goto buywheat
 :ybuywheat
 set /a wheat=%buywheat% + %wheat%
 set /a money=%money% - %wheattotal%
+set /a wheatH=%wheatH% + %buywheat%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -2066,6 +2085,7 @@ goto buycow
 :ybuycow
 set /a cow=%buycow% + %cow%
 set /a money=%money% - %cowtotal%
+set /a cowH=%cowH% + %buycow%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -2146,6 +2166,7 @@ goto buypigfeed
 :ybuypigfeed
 set /a pigfeed=%buypigfeed% + %pigfeed%
 set /a money=%money% - %pigfeedtotal%
+set /a pigfeedH=%pigfeedH% + %buypigfeed%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -2198,6 +2219,7 @@ goto buychickenfeed
 :ybuychickenfeed
 set /a chickenfeed=%buychickenfeed% + %chickenfeed%
 set /a money=%money% - %chickenfeedtotal%
+set /a chickfeedH=%chickfeedH% + %buychickenfeed%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -2250,6 +2272,7 @@ goto buycowfeed
 :ybuycowfeed
 set /a cowfeed=%buycowfeed% + %cowfeed%
 set /a money=%money% - %cowfeedtotal%
+set /a cowfeedH=%cowfeedH% + %buycowfeed%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -2259,20 +2282,82 @@ echo %buycowfeed% Serving{s} Of Cow Feed Have Been Purchased.
 pause >nul
 goto animalfeed
 ::######################################################################
-
 :exit
 cls
 echo Thank You For Playing Farm Town.
 ping -n 3 127.0.0.1 >nul
 exit
 ::######################################################################
-
+:history
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Here Is A List Of Your Purchased Items :
+echo.
+echo.
+echo.
+echo ------------------Animals ^& Feed---------------------
+echo.
+echo.
+echo.
+if %cowH% GTR 0 (
+echo Number Of Cow{s} : %cowH%      Cow Feed : %cowfeedH%
+echo -----------------------------------------------------
+echo.
+echo.
+)
+if %chickenH% GTR 0 (
+echo Number Of Chicken{s} : %chickenH%      Chicken Feed : %chickfeedH%	
+echo -----------------------------------------------------
+echo.
+echo.
+)
+if %pigH% GTR 0 (
+echo Number Of Pig{s} : %pigH%      Pig Feed : %pigfeedH%	
+echo -----------------------------------------------------
+echo.
+echo.
+echo.
+)
+echo -----------------------Crops-------------------------
+echo.
+echo.
+echo.
+if %cornH% GTR 0 (
+echo Corn : %cornH%
+echo -----------------------------------------------------
+echo.
+echo.
+)
+if %wheatH% GTR 0 (
+echo Wheat : %wheatH%
+echo -----------------------------------------------------
+echo.
+echo.
+)
+if %barleyH% GTR 0 (
+echo Barley : %barleyH%
+echo -----------------------------------------------------
+echo.
+echo.
+)
+pause >nul
+goto main
+::######################################################################
 :save
 cls
 (echo pigfed=%pigfed%)> %name%.sav
+(echo barleyH=%barleyH%)>> %name%.sav
+(echo wheatH=%wheatH%)>> %name%.sav
+(echo pigfeedH=%pigfeedH%)>> %name%.sav
+(echo chickfeedH=%chickfeedH%)>> %name%.sav
+(echo cowfeedH=%cowfeedH%)>> %name%.sav
 (echo chickenmeat=%chickenmeat%)>> %name%.sav
 (echo ham=%ham%)>> %name%.sav
 (echo beef=%beef%)>> %name%.sav
+(echo cowH=%cowH%)>> %name%.sav
 (echo cornH=%cornH%)>> %name%.sav
 (echo pigH=%pigH%)>> %name%.sav
 (echo chickenH=%chickenH%)>> %name%.sav
@@ -2290,7 +2375,6 @@ cls
 (echo wheat=%wheat%)>> %name%.sav
 (echo barley=%barley%)>> %name%.sav
 (echo energy=%energy%)>> %name%.sav
-(echo level=%level%)>> %name%.sav
 (echo cow=%cow%)>> %name%.sav
 (echo chicken=%chicken%)>> %name%.sav
 (echo pig=%pig%)>> %name%.sav
@@ -2309,11 +2393,22 @@ goto main
 ::######################################################################
 :checklevel1up
 cls
-if not %level% EQU 1 goto back2main
 if not %chickenH% GEQ 2 goto back2main
 if not %pigH% GEQ 2 goto back2main
 if not %cornH% GEQ 10 goto back2main
 set level=2
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Level Up!
+pause >nul
+goto back2main
+:checklevel2up
+cls
+if not %cowH% GEQ 1 goto back2main
+if not %barleyH% GEQ 20 goto back2main
+set level=3
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
