@@ -10,6 +10,10 @@ What's left is:
 
 -Adding the ability to modify the players energy.
 
+-Adding Potatoes As A Crop In The Game
+
+-Adding Sheep As A Animal In The Game
+
 INSTALATION INSTRUCTIONS:
 
 1. Restore default buffer size and window size for cmd if changed.
