@@ -6,7 +6,7 @@ The code is around 90% complete from what it was originaly inteaded to do. And i
 
 What's left is:
 
--Adding the ability to rase the players level past level 2.
+-Adding the ability to rase the players level past level 3.
 
 -Adding the ability to modify the players energy.
 
