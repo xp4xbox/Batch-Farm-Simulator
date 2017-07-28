@@ -4,6 +4,7 @@
 TITLE Farm Town
 color 1f
 :start
+set name=
 ::change directory to userprofile to load/save save file
 cd \ & cd /d %userprofile%
 cls
@@ -29,7 +30,9 @@ cls
 set cornH=0
 set chickenH=0
 set pigH=0
+set chickenmeat=0
 set beef=0
+set ham=0
 set pigfed=0
 set chickfed=0
 set eggs=0
@@ -67,6 +70,8 @@ set milksellprice=125
 set cornsellprice=10
 set wheatsellprice=5
 set barleysellprice=6
+set hamsellprice=65
+set chickensellprice=20
 
 set barleyprice=3
 set wheatprice=2
@@ -85,6 +90,8 @@ set feedperpig=10
 set dozeneggsperchick=2
 set milkbarrelspercow=1
 set containersbeefpercow=4
+set containerschickperchick=2
+set containershamperpig=2
 ::######################################################################
 :main
 ::check to see if user can level up to level 2
@@ -178,6 +185,114 @@ echo Invalid Choice, Please Try Again.
 pause >nul
 goto collectMeat
 ::######################################################################
+:meatPig
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+if %pig% LSS 1 (
+echo You Don't Have Any Pigs!
+pause >nul
+goto collectMeat
+)
+if %pigfed% LSS 1 (
+echo Sorry, Your Pigs Must Be Fed First.
+pause >nul
+goto collectMeat
+)
+echo How Many Pigs Worth Of Ham Would You Like To Collect? Please Type an Amount.
+echo.
+echo.
+set /p ham2collect=
+echo.
+echo.
+if not defined ham2collect goto meatPig
+if %ham2collect% GTR %pigfed% (
+echo Sorry, You Do Not Have Enough Fed Pigs. You Currently Have %pigfed% Fed Pig{s}.
+pause >nul
+goto meatPig
+)
+set /a ham2collectC=%ham2collect% * %containershamperpig%
+echo Do You Really Want to Butcher %ham2collect% Pig{s} For %ham2collectC% Containers Of Ham? Y/N
+echo.
+echo.
+set /p choice34=
+if not defined choice34 goto meatPig
+echo.
+echo.
+if "%choice34%"=="y" goto ycollectHam
+if "%choice34%"=="n" goto collectMeat
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto meatPig
+:ycollectHam
+set /a pig=%pig% - %ham2collect%
+set /a pigfed=%pigfed% - %ham2collect%
+set /a ham=%ham% + %ham2collectC%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo You Have Collected Your Ham.
+pause >nul
+goto collectMeat
+::######################################################################
+:meatChicken
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+if %chicken% LSS 1 (
+echo You Don't Have Any Chickens!
+pause >nul
+goto collectMeat
+)
+if %chickfed% LSS 1 (
+echo Sorry, Your Chickens Must Be Fed First.
+pause >nul
+goto collectMeat
+)
+echo How Many Chickens Worth Of Meat Would You Like To Collect? Please Type an Amount.
+echo.
+echo.
+set /p chickmeat2collect=
+echo.
+echo.
+if not defined chickmeat2collect goto meatChicken
+if %chickmeat2collect% GTR %chickfed% (
+echo Sorry, You Do Not Have Enough Fed Chickens. You Currently Have %chickfed% Fed Chicken{s}.
+pause >nul
+goto meatChicken
+)
+set /a chickmeat2collectC=%chickmeat2collect% * %containerschickperchick%
+echo Do You Really Want to Butcher %chickmeat2collect% Chicken{s} For %chickmeat2collectC% Containers Of Chicken? Y/N
+echo.
+echo.
+set /p choice33=
+if not defined choice33 goto meatChicken
+echo.
+echo.
+if "%choice33%"=="y" goto ycollectChickM
+if "%choice33%"=="n" goto collectMeat
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto meatChicken
+:ycollectChickM
+set /a chicken=%chicken% - %chickmeat2collect%
+set /a chickfed=%chickfed% - %chickmeat2collect%
+set /a chickenmeat=%chickenmeat% + %chickmeat2collectC%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo You Have Collected Your Chicken.
+pause >nul
+goto collectMeat
+::######################################################################
 :meatCow
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
@@ -187,12 +302,12 @@ echo.
 if %cow% LSS 1 (
 echo You Don't Have Any Cows!
 pause >nul
-goto tanimals
+goto collectMeat
 )
 if %cowfed% LSS 1 (
 echo Sorry, Your Cows Must Be Fed First.
 pause >nul
-goto tanimals
+goto collectMeat
 )
 echo How Many Cows Worth Of Beef Would You Like To Collect? Please Type an Amount.
 echo.
@@ -215,7 +330,7 @@ if not defined choice31 goto meatCow
 echo.
 echo.
 if "%choice31%"=="y" goto ycollectBe
-if "%choice31%"=="n" goto tanimals
+if "%choice31%"=="n" goto collectMeat
 echo Invalid Choice, Please Try Again.
 pause >nul
 goto meatCow
@@ -230,7 +345,7 @@ echo.
 echo.
 echo You Have Collected Your Beef.
 pause >nul
-goto tanimals
+goto collectMeat
 ::######################################################################
 :collectEgg
 cls
@@ -1005,6 +1120,18 @@ echo -----------------------------------------------------
 echo.
 echo.
 )
+if %chickenmeat% GTR 0 (
+echo Containers Of Chicken : %chickenmeat%
+echo -----------------------------------------------------
+echo.
+echo.
+)
+if %ham% GTR 0 (
+echo Containers Of Ham : %ham%
+echo -----------------------------------------------------
+echo.
+echo.
+)
 pause >nul
 goto main
 ::######################################################################
@@ -1090,6 +1217,112 @@ echo Invalid Choice, Please Try Again.
 pause >nul
 goto sellMeat
 ::######################################################################
+:sellChickenMeat
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+if %chickenmeat% LSS 1 (
+echo Sorry, You Currently Have No Chicken To Sell.
+pause >nul
+goto sellMeat
+)
+echo A Container Of Chicken Is Currently Worth $%chickensellprice%.
+echo.
+echo.
+echo How Many Containers Would You Like To Sell? Please Type An Amount.
+echo.
+echo.
+set /p sellchicken=Chicken To Sell: 
+if not defined sellchicken goto sellChickenMeat
+if %sellchicken% GTR %chickenmeat% (
+echo.
+echo.
+echo You Do Not Have Enough Chicken To Sell %sellchicken% Containers. You Currently Have %chickenmeat% Containers.
+pause >nul
+goto sellChickenMeat
+)
+echo.
+echo.
+set /a chickincome=%chickensellprice% * %sellchicken%
+echo Do You Really Want To Sell %sellchicken% Containers For $%chickincome%? Y/N
+echo.
+echo.
+set /p choice36=
+if not defined choice36 goto sellChickenMeat
+echo.
+echo.
+if "%choice36%"=="y" goto ysellchickMeat
+if "%choice36%"=="n" goto sellMeat
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto sellChickenMeat
+:ysellchickMeat
+set /a chickenmeat=%chickenmeat% - %sellchicken%
+set /a money=%money% + %chickincome%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo You Have Sold Your Chicken.
+pause >nul
+goto sellMeat
+::######################################################################
+:sellHam
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+if %ham% LSS 1 (
+echo Sorry, You Currently Have No Ham To Sell.
+pause >nul
+goto sellMeat
+)
+echo A Container Of Ham Is Currently Worth $%hamsellprice%.
+echo.
+echo.
+echo How Many Containers Would You Like To Sell? Please Type An Amount.
+echo.
+echo.
+set /p sellham=Ham To Sell: 
+if not defined sellham goto sellHam
+if %sellham% GTR %ham% (
+echo.
+echo.
+echo You Do Not Have Enough Ham To Sell %sellham% Containers. You Currently Have %ham% Containers.
+pause >nul
+goto sellHam
+)
+echo.
+echo.
+set /a hamincome=%hamsellprice% * %sellham%
+echo Do You Really Want To Sell %sellham% Containers For $%hamincome%? Y/N
+echo.
+echo.
+set /p choice35=
+if not defined choice35 goto sellHam
+echo.
+echo.
+if "%choice35%"=="y" goto ysellham
+if "%choice35%"=="n" goto sellMeat
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto sellHam
+:ysellham
+set /a ham=%ham% - %sellham%
+set /a money=%money% + %hamincome%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo You Have Sold Your Ham.
+pause >nul
+goto sellMeat
+::######################################################################
 :sellBeef
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
@@ -1127,7 +1360,7 @@ if not defined choice32 goto sellBeef
 echo.
 echo.
 if "%choice32%"=="y" goto ysellbeef
-if "%choice32%"=="n" goto sellBeef
+if "%choice32%"=="n" goto sellMeat
 echo Invalid Choice, Please Try Again.
 pause >nul
 goto sellBeef
@@ -1527,7 +1760,7 @@ goto buybarley
 echo.
 echo.
 if "%choice10%"=="y" goto ybuybarley
-if "%choice10%"=="n" goto buybarley
+if "%choice10%"=="n" goto crops
 echo Invalid Choice, Please Try Again.
 pause >nul
 goto buybarley
@@ -1579,7 +1812,7 @@ goto buywheat
 echo.
 echo.
 if "%choice9%"=="y" goto ybuywheat
-if "%choice9%"=="n" goto buywheat
+if "%choice9%"=="n" goto crops
 echo Invalid Choice, Please Try Again.
 pause >nul
 goto buywheat
@@ -1631,7 +1864,7 @@ goto buycorn
 echo.
 echo.
 if "%choice8%"=="y" goto ybuycorn
-if "%choice8%"=="n" goto buycorn
+if "%choice8%"=="n" goto crops
 echo Invalid Choice, Please Try Again.
 pause >nul
 goto buycorn
@@ -1713,7 +1946,7 @@ goto buypig
 echo.
 echo.
 if "%choice6%"=="y" goto ybuypig
-if "%choice6%"=="n" goto buypig
+if "%choice6%"=="n" goto animal
 echo Invalid Choice, Please Try Again.
 pause >nul
 goto buypig
@@ -1767,7 +2000,7 @@ goto buychicken
 echo.
 echo.
 if "%choice2%"=="y" goto ybuychicken
-if "%choice2%"=="n" goto buychicken
+if "%choice2%"=="n" goto animal
 echo Invalid Choice, Please Try Again.
 pause >nul
 goto buychicken
@@ -1826,7 +2059,7 @@ goto buycow
 echo.
 echo.
 if "%choice1%"=="y" goto ybuycow
-if "%choice1%"=="n" goto buycow
+if "%choice1%"=="n" goto animal
 echo Invalid Choice, Please Try Again!
 pause >nul
 goto buycow
@@ -1906,7 +2139,7 @@ goto buypigfeed
 echo.
 echo.
 if "%choice7%"=="y" goto ybuypigfeed
-if "%choice7%"=="n" goto buypigfeed
+if "%choice7%"=="n" goto animalfeed
 echo Invalid Choice, Please Try Again!
 pause >nul
 goto buypigfeed
@@ -1958,7 +2191,7 @@ goto buychickenfeed
 echo.
 echo.
 if "%choice4%"=="y" goto ybuychickenfeed
-if "%choice4%"=="n" goto buychickenfeed
+if "%choice4%"=="n" goto animalfeed
 echo Invalid Choice, Please Try Again!
 pause >nul
 goto buychickenfeed
@@ -2010,7 +2243,7 @@ goto buycowfeed
 echo.
 echo.
 if "%choice2%"=="y" goto ybuycowfeed
-if "%choice2%"=="n" goto buycowfeed
+if "%choice2%"=="n" goto animalfeed
 echo Invalid Choice, Please Try Again!
 pause >nul
 goto buycowfeed
@@ -2037,6 +2270,8 @@ exit
 :save
 cls
 (echo pigfed=%pigfed%)> %name%.sav
+(echo chickenmeat=%chickenmeat%)>> %name%.sav
+(echo ham=%ham%)>> %name%.sav
 (echo beef=%beef%)>> %name%.sav
 (echo cornH=%cornH%)>> %name%.sav
 (echo pigH=%pigH%)>> %name%.sav
