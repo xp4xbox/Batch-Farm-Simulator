@@ -102,6 +102,10 @@ set milkbarrelspercow=1
 set containersbeefpercow=4
 set containerschickperchick=2
 set containershamperpig=2
+
+set energypercornrow=1
+set energyperbarleyrow=1
+set energyperwheatrow=1
 ::######################################################################
 :main
 ::check to see if user can level up
@@ -877,6 +881,14 @@ echo Sorry, You Do Not Have Enough Barley Seeds To Plant That Many Rows.
 pause >nul
 goto plantbarley
 )
+set /a energy2use=%energyperbarleyrow% * %plantebarley%
+if %energy2use% GTR %energy% (
+echo.
+echo.
+echo Sorry, You Do Not Have Enough Energy To Plant That Many Rows.
+pause >nul
+goto plantbarley
+)
 echo.
 echo.
 echo Do You Really Want To Plant %plantebarley% Row{s} Of Barley? (Y/N)
@@ -896,6 +908,7 @@ goto plantbarley
 :yplantbarley
 set /a plantbarley=%plantbarley% + %plantebarley%
 set /a barley=%barley% - %plantebarley%
+set /a energy=%energy% - %energy2use%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -926,6 +939,14 @@ echo Sorry, You Do Not Have Enough Wheat Seeds To Plant That Many Rows.
 pause >nul
 goto plantwheat
 )
+set /a energy2use=%energyperwheatrow% * %plantewheat%
+if %energy2use% GTR %energy% (
+echo.
+echo.
+echo Sorry, You Do Not Have Enough Energy To Plant That Many Rows.
+pause >nul
+goto plantwheat
+)
 echo.
 echo.
 echo Do You Really Want To Plant %plantewheat% Row{s} Of Wheat? (Y/N)
@@ -945,6 +966,7 @@ goto plantwheat
 :yplantwheat
 set /a wheat=%wheat% - %plantewheat%
 set /a plantwheat=%plantwheat% + %plantewheat%
+set /a energy=%energy% - %energy2use%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -975,6 +997,14 @@ echo Sorry, You Do Not Have Enough Corn Seeds To Plant That Many Rows.
 pause >nul
 goto plantcorn
 )
+set /a energy2use=%energypercornrow% * %plantecorn%
+if %energy2use% GTR %energy% (
+echo.
+echo.
+echo Sorry, You Do Not Have Enough Energy To Plant That Many Rows.
+pause >nul
+goto plantcorn
+)
 echo.
 echo.
 echo Do You Really Want To Plant %plantecorn% Row{s} Of Corn? (Y/N)
@@ -994,6 +1024,7 @@ goto plantcorn
 :yplantcorn
 set /a corn=%corn% - %plantecorn%
 set /a plantcorn=%plantcorn% + %plantecorn%
+set /a energy=%energy% - %energy2use%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
