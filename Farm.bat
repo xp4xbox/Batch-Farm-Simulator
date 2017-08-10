@@ -247,6 +247,13 @@ set /p ham2collect=
 echo.
 echo.
 if not defined ham2collect goto meatPig
+if %ham2collect% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto meatPig
+)
 if %ham2collect% GTR %pigfed% (
 echo Sorry, You Do Not Have Enough Fed Pigs. You Currently Have %pigfed% Fed Pig{s}.
 pause >nul
@@ -308,6 +315,13 @@ set /p chickmeat2collect=
 echo.
 echo.
 if not defined chickmeat2collect goto meatChicken
+if %chickmeat2collect% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto meatChicken
+)
 if %chickmeat2collect% GTR %chickfed% (
 echo Sorry, You Do Not Have Enough Fed Chickens. You Currently Have %chickfed% Fed Chicken{s}.
 pause >nul
@@ -369,6 +383,13 @@ set /p meat2collect=
 echo.
 echo.
 if not defined meat2collect goto meatCow
+if %meat2collect% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto meatCow
+)
 if %meat2collect% GTR %cowfed% (
 echo Sorry, You Do Not Have Enough Fed Cows. You Currently Have %cowfed% Fed Cow{s}.
 pause >nul
@@ -978,6 +999,13 @@ set /p plantebarley=Barley To Plant :
 if not defined plantebarley (
 goto plantbarley
 )
+if %plantebarley% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto plantbarley
+)
 if %plantebarley% GTR %barley% (
 echo.
 echo.
@@ -1036,6 +1064,13 @@ set /p plantewheat=Wheat To Plant :
 if not defined plantewheat (
 goto plantwheat
 )
+if %plantewheat% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto plantwheat
+)
 if %plantewheat% GTR %wheat% (
 echo.
 echo.
@@ -1092,6 +1127,13 @@ echo.
 echo.
 set /p plantecorn=Corn To Plant : 
 if not defined plantecorn (
+goto plantcorn
+)
+if %plantecorn% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
 goto plantcorn
 )
 if %plantecorn% GTR %corn% (
@@ -1329,6 +1371,13 @@ echo.
 echo.
 set /p buyenergy=Energy To Buy: 
 if not defined buyenergy goto buyenergy
+if %buyenergy% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto buyenergy
+)
 set /a energytotal=%buyenergy% * %energyprice%
 if %energytotal% GTR %money% (
 echo.
@@ -1438,6 +1487,13 @@ echo.
 echo.
 set /p sellchicken=Chicken To Sell: 
 if not defined sellchicken goto sellChickenMeat
+if %sellchicken% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto sellChickenMeat
+)
 if %sellchicken% GTR %chickenmeat% (
 echo.
 echo.
@@ -1491,6 +1547,13 @@ echo.
 echo.
 set /p sellham=Ham To Sell: 
 if not defined sellham goto sellHam
+if %sellham% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto sellHam
+)
 if %sellham% GTR %ham% (
 echo.
 echo.
@@ -1544,6 +1607,13 @@ echo.
 echo.
 set /p sellbeef=Beef To Sell: 
 if not defined sellbeef goto sellBeef
+if %sellbeef% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto sellBeef
+)
 if %sellbeef% GTR %beef% (
 echo.
 echo.
@@ -1597,6 +1667,13 @@ echo.
 echo.
 set /p sellegg=Eggs To Sell: 
 if not defined sellegg goto sellE
+if %sellegg% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto sellE
+)
 if %sellegg% GTR %eggs% (
 echo.
 echo.
@@ -1650,6 +1727,13 @@ echo.
 echo.
 set /p sellmilk=Milk To Sell: 
 if not defined sellmilk (
+goto sellM
+)
+if %sellmilk% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
 goto sellM
 )
 if %sellmilk% GTR %milk% (
@@ -1730,6 +1814,13 @@ set /p sellcorn=Corn To Sell:
 if not defined sellcorn (
 goto sellcorn
 )
+if %sellcorn% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto sellcorn
+)
 if %sellcorn% GTR %harvestcorn% (
 echo.
 echo.
@@ -1782,6 +1873,13 @@ set /p sellwheat=Wheat To Sell:
 if not defined sellwheat (
 goto sellwheat
 )
+if %sellwheat% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto sellwheat
+)
 if %sellwheat% GTR %harvestwheat% (
 echo.
 echo.
@@ -1832,6 +1930,13 @@ echo.
 echo.
 set /p sellbarley=Barley To Sell: 
 if not defined sellbarley (
+goto sellbarley
+)
+if %sellbarley% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
 goto sellbarley
 )
 if %sellbarley% GTR %harvestbarley% (
@@ -1942,6 +2047,13 @@ set /p buybarley=Barley Seeds To Buy:
 if not defined buybarley (
 goto buybarley
 )
+if %buybarley% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto buybarley
+)
 set /a barleytotal=%buybarley% * %barleyprice%
 if %barleytotal% GTR %money% (
 echo.
@@ -1995,6 +2107,13 @@ set /p buywheat=Wheat Seeds To Buy:
 if not defined buywheat (
 goto buywheat
 )
+if %buywheat% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto buywheat
+)
 set /a wheattotal=%buywheat% * %wheatprice%
 if %wheattotal% GTR %money% (
 echo.
@@ -2046,6 +2165,13 @@ echo.
 echo.
 set /p buycorn=Corn Seeds To Buy: 
 if not defined buycorn (
+goto buycorn
+)
+if %buycorn% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
 goto buycorn
 )
 set /a corntotal=%buycorn% * %cornprice%
@@ -2130,6 +2256,13 @@ set /p buypig=Pig{s} To Buy:
 if not defined buypig (
 goto buypig
 )
+if %buypig% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto buypig
+)
 set /a pigtotal=%buypig% * %pigprice%
 if %pigtotal% GTR %money% (
 echo.
@@ -2182,6 +2315,13 @@ echo.
 echo.
 set /p buychicken=Chicken{s} To Buy: 
 if not defined buychicken (
+goto buychicken
+)
+if %buychicken% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
 goto buychicken
 )
 set /a chickentotal=%buychicken% * %chickenprice%
@@ -2241,6 +2381,13 @@ echo.
 echo.
 set /p buycow=Cow{s} To Buy: 
 if not defined buycow (
+goto buycow
+)
+if %buycow% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
 goto buycow
 )
 set /a cowtotal=%buycow% * %cowprice%
@@ -2324,6 +2471,13 @@ set /p buypigfeed=Pig Feed To Buy:
 if not defined buypigfeed (
 goto buypigfeed
 )
+if %buypigfeed% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto buypigfeed
+)
 set /a pigfeedtotal=%buypigfeed% * %pigfeedprice%
 if %pigfeedtotal% GTR %money% (
 echo.
@@ -2377,6 +2531,13 @@ set /p buychickenfeed=Chicken Feed To Buy:
 if not defined buychickenfeed (
 goto buychickenfeed
 )
+if %buychickenfeed% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
+goto buychickenfeed
+)
 set /a chickenfeedtotal=%buychickenfeed% * %chickenfeedprice%
 if %chickenfeedtotal% GTR %money% (
 echo.
@@ -2428,6 +2589,13 @@ echo.
 echo.
 set /p buycowfeed=Cow Feed To Buy: 
 if not defined buycowfeed (
+goto buycowfeed
+)
+if %buycowfeed% LSS 0 (
+echo.
+echo.
+echo You Must Enter A Positive Integer!
+pause >nul
 goto buycowfeed
 )
 set /a cowfeedtotal=%buycowfeed% * %cowfeedprice%
