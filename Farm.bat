@@ -1,11 +1,11 @@
-::Farm Town Is An Open Source Batch Farm Simulator Made by Nicolas Hawrysh
+::Farm Town Is An Open Source Batch Farm Simulator Made by Nicolas Hawrysh Currently v1.0
 
 ::To level up, you must buy 2 pigs, 2 chickens and 10 rows of corn.
 ::To level up to level 3, you must buy at least 1 cow and 20 rows of barley.
 
 ::There is a secret option that shows all history for purchased items
 @echo off
-TITLE Farm Town
+TITLE Farm Town v1
 color 1f
 :start
 set name=
@@ -74,13 +74,16 @@ for /f %%a in (%name%.sav) do set %%a
 goto setdefaultvalues
 
 :setdefaultvalues
-set beefsellprice=12
-set eggsellprice=3
-set milksellprice=125
-set cornsellprice=10
-set wheatsellprice=5
-set barleysellprice=6
-set hamsellprice=65
+
+set energyprice=1
+
+set beefsellprice=24
+set eggsellprice=6
+set milksellprice=130
+set cornsellprice=12
+set wheatsellprice=6
+set barleysellprice=8
+set hamsellprice=74
 set chickensellprice=20
 
 set barleyprice=3
@@ -106,6 +109,21 @@ set containershamperpig=2
 set energypercornrow=1
 set energyperbarleyrow=1
 set energyperwheatrow=1
+
+set energypercornrowh=2
+set energyperbarleyrowh=1
+set energyperwheatrowh=1
+
+set energy2feedcow=5
+set energy2feedchick=1
+set energy2feedpig=3
+
+set energypercowmilk=5
+set energyperchickegg=1
+
+set energyperbutchcow=25
+set energyperbutchchick=5
+set energyperbutchpig=10
 ::######################################################################
 :main
 ::check to see if user can level up
@@ -234,6 +252,12 @@ echo Sorry, You Do Not Have Enough Fed Pigs. You Currently Have %pigfed% Fed Pig
 pause >nul
 goto meatPig
 )
+set /a energy2use=%energyperbutchpig% * %ham2collect%
+if %energy2use% GTR %energy% (
+echo Sorry, You Do Not Have Enough Energy To Butcher That Many Pigs.
+pause >nul
+goto meatPig
+)
 set /a ham2collectC=%ham2collect% * %containershamperpig%
 echo Do You Really Want to Butcher %ham2collect% Pig{s} For %ham2collectC% Containers Of Ham? Y/N
 echo.
@@ -251,6 +275,7 @@ goto meatPig
 set /a pig=%pig% - %ham2collect%
 set /a pigfed=%pigfed% - %ham2collect%
 set /a ham=%ham% + %ham2collectC%
+set /a energy=%energy% - %energy2use%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -288,6 +313,12 @@ echo Sorry, You Do Not Have Enough Fed Chickens. You Currently Have %chickfed% F
 pause >nul
 goto meatChicken
 )
+set /a energy2use=%energyperbutchchick% * %chickmeat2collect%
+if %energy2use% GTR %energy% (
+echo Sorry, You Do Not Have Enough Energy To Butcher That Many Chickens.
+pause >nul
+goto meatChicken
+)
 set /a chickmeat2collectC=%chickmeat2collect% * %containerschickperchick%
 echo Do You Really Want to Butcher %chickmeat2collect% Chicken{s} For %chickmeat2collectC% Containers Of Chicken? Y/N
 echo.
@@ -305,6 +336,7 @@ goto meatChicken
 set /a chicken=%chicken% - %chickmeat2collect%
 set /a chickfed=%chickfed% - %chickmeat2collect%
 set /a chickenmeat=%chickenmeat% + %chickmeat2collectC%
+set /a energy=%energy% - %energy2use%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -342,6 +374,12 @@ echo Sorry, You Do Not Have Enough Fed Cows. You Currently Have %cowfed% Fed Cow
 pause >nul
 goto meatCow
 )
+set /a energy2use=%energyperbutchcow% * %meat2collect%
+if %energy2use% GTR %energy% (
+echo Sorry, You Do Not Have Enough Energy To Butcher That Many Cows.
+pause >nul
+goto meatCow
+)
 set /a meat2collectC=%meat2collect% * %containersbeefpercow%
 echo Do You Really Want to Butcher %meat2collect% Cow{s} For %meat2collectC% Containers Of Beef? Y/N
 echo.
@@ -359,6 +397,7 @@ goto meatCow
 set /a cow=%cow% - %meat2collect%
 set /a cowfed=%cowfed% - %meat2collect%
 set /a beef=%beef% + %meat2collectC%
+set /a energy=%energy% - %energy2use%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -384,6 +423,12 @@ echo Sorry, Your Chicken{s} Must Be Fed First.
 pause >nul
 goto tanimals
 )
+set /a energy2use=%energyperchickegg% * %chickfed%
+if %energy2use% GTR %energy% (
+echo Sorry, You Do Not Have Enough Energy To Collect That Many Eggs.
+pause >nul
+goto tanimals
+)
 set /a numofegg=%chickfed% * %dozeneggsperchick%
 echo Do You Really Want to Collect %numofegg% Dozen Eggs? Y/N
 echo.
@@ -399,6 +444,7 @@ pause >nul
 goto collectEgg
 :ycollectEgg
 set /a eggs=%eggs% + %numofegg%
+set /a energy=%energy% - %energy2use%
 set chickfed=0
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
@@ -425,6 +471,12 @@ echo Sorry, Your Cows Must Be Fed First.
 pause >nul
 goto tanimals
 )
+set /a energy2use=%energypercowmilk% * %cowfed%
+if %energy2use% GTR %energy% (
+echo Sorry, You Do Not Have Enough Energy To Milk All Of Your Cows.
+pause >nul
+goto tanimals
+)
 set /a barrelsmilk=%cowfed% * %milkbarrelspercow%
 echo Do You Really Want to Milk Your Cows For %barrelsmilk% Barrel{s} Of Milk? Y/N
 echo.
@@ -440,6 +492,7 @@ pause >nul
 goto collectM
 :ycollectM
 set /a milk=%milk% + %barrelsmilk%
+set /a energy=%energy% - %energy2use%
 set cowfed=0
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
@@ -498,6 +551,12 @@ echo Sorry, You Do Not Currently Have Enough Pig Feed To Feed %pig2feed% Pig{s}.
 pause >nul
 goto feedA
 )
+set /a energy2use=%energy2feedpig% * %pig2feed%
+if %energy2use% GTR %energy% (
+echo Sorry, You Do Not Currently Have Enough Energy.
+pause >nul
+goto feedA
+)
 echo You Currently Have %pig2feed% Pig{s} That Require Feeding Of %pig% Pig{s}.
 echo.
 echo.
@@ -516,6 +575,7 @@ goto feedpig
 :yfeedpig
 set /a pigfeed=%pigfeed% - %numpigservings%
 set /a pigfed=%pigfed% + %pig2feed%
+set /a energy=%energy% - %energy2use%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -547,6 +607,12 @@ echo Sorry, You Do Not Currently Have Enough Chicken Feed To Feed %chick2feed% C
 pause >nul
 goto feedA
 )
+set /a energy2use=%energy2feedchick% * %chick2feed%
+if %energy2use% GTR %energy% (
+echo Sorry, You Do Not Currently Have Enough Energy.
+pause >nul
+goto feedA
+)
 echo You Currently Have %chick2feed% Chicken{s} That Require Feeding Of %chicken% Chickens{s}.
 echo.
 echo.
@@ -565,6 +631,7 @@ goto feedChick
 :yfeedchick
 set /a chickenfeed=%chickenfeed% - %numchickservings%
 set /a chickfed=%chickfed% + %chick2feed%
+set /a energy=%energy% - %energy2use%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -598,6 +665,12 @@ echo Sorry, You Do Not Currently Have Enough Cow Feed To Feed %cow2feed% Cows. P
 pause >nul
 goto feedA
 )
+set /a energy2use=%cow2feed% * %energy2feedcow%
+if %energy2use% GTR %energy% (
+echo Sorry, You Do Not Currently Have Enough Energy.
+pause >nul
+goto feedA
+)
 echo You Currently Have %cow2feed% Cow{s} That Require Feeding Of %cow% Cow{s}.
 echo.
 echo.
@@ -618,6 +691,7 @@ goto feedCow
 :yfeedcow
 set /a cowfeed=%cowfeed% - %numcowservings%
 set /a cowfed=%cowfed% + %cow2feed%
+set /a energy=%energy% - %energy2use%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -694,6 +768,15 @@ echo Sorry, You Do Not Have Any Wheat Planted.
 pause >nul
 goto harvestt
 )
+set /a energy2use=%energyperwheatrowh% * %plantwheat%
+if %energy2use% GTR %energy% (
+echo.
+echo.
+echo.
+echo Sorry, You Do Not Have Enough Energy To Harvest That Many Rows.
+pause >nul
+goto harvestt
+)
 echo.
 echo.
 ::Set timer for length until wheat is ready currently at 3 seconds
@@ -724,6 +807,7 @@ goto harvestwheat2
 :yharvestwheat
 set /a harvestwheat=%plantwheat% + %harvestwheat%
 set plantwheat=0
+set /a energy=%energy% - %energy2use%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -741,6 +825,15 @@ echo.
 echo.
 echo.
 echo Sorry, You Do Not Have Any Barley Planted.
+pause >nul
+goto harvestt
+)
+set /a energy2use=%energyperbarleyrowh% * %plantbarley%
+if %energy2use% GTR %energy% (
+echo.
+echo.
+echo.
+echo Sorry, You Do Not Have Enough Energy To Harvest That Many Rows.
 pause >nul
 goto harvestt
 )
@@ -774,6 +867,7 @@ goto harvestbarley2
 :yharvestbarley
 set /a harvestbarley=%plantbarley% + %harvestbarley%
 set plantbarley=0
+set /a energy=%energy% - %energy2use%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -791,6 +885,15 @@ echo.
 echo.
 echo.
 echo Sorry, You Do Not Have Any Corn Planted.
+pause >nul
+goto harvestt
+)
+set /a energy2use=%energypercornrowh% * %plantcorn%
+if %energy2use% GTR %energy% (
+echo.
+echo.
+echo.
+echo Sorry, You Do Not Have Enough Energy To Harvest That Many Rows.
 pause >nul
 goto harvestt
 )
@@ -824,6 +927,7 @@ goto harvestcorn2
 :yharvestcorn
 set /a harvestcorn=%plantcorn% + %harvestcorn%
 set plantcorn=0
+set /a energy=%energy% - %energy2use%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -966,7 +1070,7 @@ goto plantwheat
 :yplantwheat
 set /a wheat=%wheat% - %plantewheat%
 set /a plantwheat=%plantwheat% + %plantewheat%
-set /a energy=%energy% - %energy2use%
+set /a energy=%energy% - %energy2Zuse%
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1194,7 +1298,8 @@ echo.
 echo.
 echo 1) Buy
 echo 2) Sell
-echo 3) Back To Main Menu
+echo 3) Buy Energy
+echo 4) Back To Main Menu
 echo.
 echo.
 set /p StoreMC=
@@ -1203,9 +1308,58 @@ goto storeM
 )
 if "%StoreMC%"=="1" goto store
 if "%StoreMC%"=="2" goto sell
-if "%StoreMC%"=="3" goto main
+if "%StoreMC%"=="3" goto buyenergy
+if "%StoreMC%"=="4" goto main
 echo.
 echo Invalid Choice, Please Try Again!
+pause >nul
+goto storeM
+::######################################################################
+:buyenergy
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Energy Is Currently $%energyprice% Each.
+echo.
+echo.
+echo How Much Energy Would You Like To Buy? Please Type An Amount.
+echo.
+echo.
+set /p buyenergy=Energy To Buy: 
+if not defined buyenergy goto buyenergy
+set /a energytotal=%buyenergy% * %energyprice%
+if %energytotal% GTR %money% (
+echo.
+echo.
+echo Sorry, You Do Not Have Enough Money To Purchase That Much Energy.
+pause >nul
+goto buyenergy
+)
+echo.
+echo.
+echo Do You Really Want To Buy %buyenergy% Energy For $%energytotal%? (Y/N)
+echo.
+echo.
+set /p choice37=
+if not defined choice37 goto buyenergy
+echo.
+echo.
+if "%choice37%"=="y" goto ybuyenergy
+if "%choice37%"=="n" goto storeM
+echo Invalid Choice, Please Try Again!
+pause >nul
+goto buyenergy
+:ybuyenergy
+set /a money=%money% - %energytotal%
+set /a energy=%energy% + %buyenergy%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo %buyenergy% Energy Has Been Purchased.
 pause >nul
 goto storeM
 ::######################################################################
@@ -2316,7 +2470,19 @@ goto animalfeed
 :exit
 cls
 echo Thank You For Playing Farm Town.
-ping -n 3 127.0.0.1 >nul
+echo.
+echo.
+echo Please Make Sure You Save Your Game. Are You Sure You Want To Exit? (Y/N)
+echo.
+echo.
+set exityn=
+set /p exityn=
+if "%exityn%"=="y" exit
+if "%exityn%"=="n" goto main
+if not defined exityn goto exit
+echo.
+echo Invalid Choice, Please Try Again.
+pause >nul
 exit
 ::######################################################################
 :history
