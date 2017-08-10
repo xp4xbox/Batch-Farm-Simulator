@@ -12,8 +12,13 @@ Features To Add In The Future:
 
 -Adding Sheep As An Animal In The Game
 
-INSTALATION INSTRUCTIONS:
+INSTALATION INSTRUCTIONS FOR 32BIT:
 
 1. Restore default buffer size and window size for cmd if changed.
 2. Run Farm.bat anywere you want. (it is a 100% portable application although the save file will be placed in the user's userprofile directory ex. c:\users\xp4xbox)
 
+INSTALATION INSTRUCTIONS FOR 64BIT:
+
+1. Restore default buffer size and window size for cmd if changed.
+2. Download the compiled 64bit version OR compile using https://www.abyssmedia.com/quickbfc/ making sure to compile as a 32bit application.
+2. Run compiled .exe anywere you want. (it is a 100% portable application although the save file will be placed in the user's userprofile directory ex. c:\users\xp4xbox)
