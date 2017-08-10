@@ -2,17 +2,15 @@
 
 This is a farm simulator game written in batch. This game was started a couple years, but after several difficult bugs, I decided to discontinue until I recently started back up on the project.
 
-The code is around 90% complete from what it was originaly inteaded to do. And is about 95% bug free.
+The code is around 100% complete from what it was originaly inteaded to do. And is about 95% bug free.
 
-What's left is:
+Features To Add In The Future:
 
 -Adding the ability to rase the players level past level 3.
 
--Adding the ability to modify the players energy.
-
 -Adding Potatoes As A Crop In The Game
 
--Adding Sheep As A Animal In The Game
+-Adding Sheep As An Animal In The Game
 
 INSTALATION INSTRUCTIONS:
 
