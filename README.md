@@ -2,7 +2,7 @@
 
 This is a farm simulator game written in batch. This game was started a couple years, but after several difficult bugs, I decided to discontinue until I recently started back up on the project.
 
-The code is around 100% complete from what it was originaly inteaded to do. And is about 95% bug free.
+The code is 100% complete from what it was originaly inteaded to do. And is about 95% bug free.
 
 Features To Add In The Future:
 
