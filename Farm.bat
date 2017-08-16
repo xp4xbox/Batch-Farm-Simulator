@@ -66,6 +66,8 @@ set pig=0
 set cowfeed=0
 set chickenfeed=0
 set pigfeed=0
+set loancurrent=no
+set loanamtdue=0
 goto setdefaultvalues
 
 :load
@@ -124,6 +126,12 @@ set energyperchickegg=1
 set energyperbutchcow=25
 set energyperbutchchick=5
 set energyperbutchpig=10
+
+set interestrate=10
+set maxloanlvl1=700
+set maxloanlvl2=1000
+set maxloanlvl3=1500
+set minloanamount=50
 ::######################################################################
 :main
 ::check to see if user can level up
@@ -143,8 +151,9 @@ echo 1) Go To The Store
 echo 2) Harvest Field
 echo 3) Tend To The Animals
 echo 4) Check The Inventory
-echo 5) Save Your Game
-echo 6) Exit The Game
+echo 5) Go To The Bank
+echo 6) Save Your Game
+echo 7) Exit The Game
 echo.
 echo.
 set /p M=
@@ -154,14 +163,175 @@ goto main
 if "%M%"=="2" goto harvestf
 if "%M%"=="1" goto storeM
 if "%M%"=="4" goto inventory
-if "%M%"=="6" goto exit
-if "%M%"=="5" goto save
+if "%M%"=="7" goto exit
+if "%M%"=="6" goto save
 if "%M%"=="3" goto tanimals
+if "%M%"=="5" goto bank
 if "%M%"=="history" goto history
 echo.
 echo Invalid Choice, Please Try Again!
 pause >nul
 goto main
+::######################################################################
+:bank
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo Welcome To The Bank, What Would You Like To Do?
+echo.
+echo.
+echo 1) Receive Loan
+echo 2) Pay Loan
+echo 3) Back To Menu
+echo.
+echo.
+set /p choicebank=
+if not defined choicebank goto bank
+if "%choicebank%"=="1" goto loan
+if "%choicebank%"=="2" goto payloan
+if "%choicebank%"=="3" goto main
+echo.
+echo Invalid Choice, Please Try Again!
+pause >nul
+goto bank
+::######################################################################
+:payloan
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+if "%loancurrent%"=="no" (
+echo You Have No Loan Placed.
+pause >nul
+goto bank
+)
+echo You Currently Owe $%loanamtdue% To The Bank. 
+echo.
+echo.
+echo How Much Would You Like To Pay? Please Type An Amount.
+echo.
+echo.
+set /p a2pay=
+echo.
+echo.
+if not defined a2pay goto payloan
+if %a2pay% LSS 1 (
+echo You Must Pay At Least $1!
+pause >nul
+goto payloan
+)
+set /a tmp=%a2pay% * 1
+if %tmp% EQU 0 (
+echo You Must Enter An Integer!
+pause >nul
+goto payloan
+)
+if %a2pay% GTR %loanamtdue% (
+echo You Do Not Need To Pay Back That Much!
+pause >nul
+goto payloan
+)
+echo Are You Sure You Want To Pay Back $%a2pay%? Y/N
+echo.
+echo.
+set /p yesno=
+if not defined yesno goto payloan
+if "%yesno%"=="y" goto ypayloan
+if "%yesno%"=="n" goto bank
+echo.
+echo Invalid Choice, Please Try Again!
+pause >nul
+goto payloan
+:ypayloan
+set /a money=%money% - %a2pay%
+set /a loanamtdue=%loanamtdue% - %a2pay%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+if %loanamtdue% EQU 0 (
+set loancurrent=no
+echo You Have Payed Off Your Loan.
+) else (
+echo You Have Payed Part Of Your Loan.
+)
+pause >nul
+goto bank
+::######################################################################
+:loan
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+if "%loancurrent%"=="yes" (
+echo You Have Already Placed A Loan!
+pause >nul
+goto bank
+)
+echo How Much Money Would You Like To Borrow? Please Type An Amount.
+echo.
+echo.
+set /p loanamount=
+echo.
+echo.
+if not defined loanamount goto loan
+set /a tmp=%loanamount% * 1
+if %tmp% EQU 0 (
+echo You Must Enter An Integer!
+pause >nul
+goto loan
+)
+if %loanamount% LSS %minloanamount% (
+echo Your Loan Must Be $%minloanamount% Or Greater.
+pause >nul
+goto loan
+)
+if %level% EQU 1 (
+if %loanamount% GTR %maxloanlvl1% (
+echo Sorry, You Currently Can Only Borrow A Maximum Of $%maxloanlvl1% For Level 1.
+pause >nul
+goto loan
+))
+if %level% EQU 2 (
+if %loanamount% GTR %maxloanlvl2% (
+echo Sorry, You Currently Can Only Borrow A Maximum Of $%maxloanlvl2%For Level 2.
+pause >nul
+goto loan
+))
+if %level% EQU 3 (
+if %loanamount% GTR %maxloanlvl3% (
+echo Sorry, You Currently Can Only Borrow A Maximum Of $%maxloanlvl3% For Level 3.
+pause >nul
+goto loan
+))
+echo Interest Rate Is Currently %interestrate%%% Royalty Per Sell. Are You Sure You Want To Place The Loan? Y/N
+echo.
+echo.
+set /p yesnoloan=
+if not defined yesnoloan goto loan
+if "%yesnoloan%"=="y" goto yplaceloan
+if "%yesnoloan%"=="n" goto bank
+echo.
+echo Invalid Choice, Please Try Again!
+pause >nul
+goto loan
+:yplaceloan
+set /a money=%money% + %loanamount%
+set loanamtdue=%loanamount%
+set loancurrent=yes
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo You Have Placed Your Loan.
+pause >nul
+goto bank
 ::######################################################################
 :tanimals
 cls
@@ -1519,6 +1689,10 @@ goto sellChickenMeat
 :ysellchickMeat
 set /a chickenmeat=%chickenmeat% - %sellchicken%
 set /a money=%money% + %chickincome%
+if "%loancurrent%"=="no" goto skiploan2
+set /a royal=%interestrate% * %chickincome% / 100
+set /a money=%money% - %royal%
+:skiploan2
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1579,6 +1753,10 @@ goto sellHam
 :ysellham
 set /a ham=%ham% - %sellham%
 set /a money=%money% + %hamincome%
+if "%loancurrent%"=="no" goto skiploan
+set /a royal=%interestrate% * %hamincome% / 100
+set /a money=%money% - %royal%
+:skiploan
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1639,6 +1817,10 @@ goto sellBeef
 :ysellbeef
 set /a beef=%beef% - %sellbeef%
 set /a money=%money% + %beefincome%
+if "%loancurrent%"=="no" goto skiploan3
+set /a royal=%interestrate% * %beefincome% / 100
+set /a money=%money% - %royal%
+:skiploan3
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1699,6 +1881,10 @@ goto sellE
 :yselleggs
 set /a eggs=%eggs% - %sellegg%
 set /a money=%money% + %eggincome%
+if "%loancurrent%"=="no" goto skiploan4
+set /a royal=%interestrate% * %eggincome% / 100
+set /a money=%money% - %royal%
+:skiploan4
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1761,6 +1947,10 @@ goto sellM
 :ysellmilk
 set /a milk=%milk% - %sellmilk%
 set /a money=%money% + %milkincome%
+if "%loancurrent%"=="no" goto skiploan5
+set /a royal=%interestrate% * %milkincome% / 100
+set /a money=%money% - %royal%
+:skiploan5
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1848,6 +2038,10 @@ goto sellcorn
 :ysellcorn
 set /a harvestcorn=%harvestcorn% - %sellcorn%
 set /a money=%money% + %cornsellmoney%
+if "%loancurrent%"=="no" goto skiploan6
+set /a royal=%interestrate% * %cornsellmoney% / 100
+set /a money=%money% - %royal%
+:skiploan6
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1907,6 +2101,10 @@ goto sellwheat
 :ysellwheat
 set /a harvestwheat=%harvestwheat% - %sellwheat%
 set /a money=%money% + %wheatsellmoney%
+if "%loancurrent%"=="no" goto skiploan7
+set /a royal=%interestrate% * %wheatsellmoney% / 100
+set /a money=%money% - %royal%
+:skiploan7
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1966,6 +2164,10 @@ goto sellbarley
 :ysellbarley
 set /a harvestbarley=%harvestbarley% - %sellbarley%
 set /a money=%money% + %barleysellmoney%
+if "%loancurrent%"=="no" goto skiploan8
+set /a royal=%interestrate% * %barleysellmoney% / 100
+set /a money=%money% - %royal%
+:skiploan8
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -2714,6 +2916,8 @@ goto main
 :save
 cls
 (echo pigfed=%pigfed%)> %name%.sav
+(echo loanamtdue=%loanamtdue%)>> %name%.sav
+(echo loancurrent=%loancurrent%)>> %name%.sav
 (echo barleyH=%barleyH%)>> %name%.sav
 (echo wheatH=%wheatH%)>> %name%.sav
 (echo pigfeedH=%pigfeedH%)>> %name%.sav
