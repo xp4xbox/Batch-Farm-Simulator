@@ -3,7 +3,7 @@
 ::To level up, you must buy 2 pigs, 2 chickens and 10 rows of corn.
 ::To level up to level 3, you must buy at least 1 cow and 20 rows of barley.
 
-::There is a secret option that shows all history for purchased items
+::There is a secret option that shows all history for purchased items if you type "history" in the main menu.
 @echo off
 TITLE Farm Town v1
 color 1f
@@ -132,6 +132,9 @@ set maxloanlvl1=700
 set maxloanlvl2=1000
 set maxloanlvl3=1500
 set minloanamount=50
+
+set chanceforstorm=12
+set chanceforcowdisease=15
 ::######################################################################
 :main
 ::check to see if user can level up
@@ -334,6 +337,18 @@ pause >nul
 goto bank
 ::######################################################################
 :tanimals
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+set /a rannum=%random% * %chanceforcowdisease% / 32768 + 1
+if "%rannum%"=="2" (
+set cowfed=0
+set cow=0
+echo A Disease Has Spread Through Your Cows. Unfortunatly None Of Them Have Survived.
+pause >nul
+)
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -893,6 +908,20 @@ pause >nul
 goto FeedA
 ::######################################################################
 :harvestf
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+::generate random number between 1 and 10
+set /a rannum=%random% * %chanceforstorm% / 32768 + 1
+if "%rannum%"=="2" (
+set barley=0
+set corn=0
+set wheat=0
+echo A Storm Has Came Through. Your Planted Crops Have Been Destroyed.
+pause >nul
+)
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -1549,6 +1578,8 @@ pause >nul
 goto buyenergy
 )
 set /a energytotal=%buyenergy% * %energyprice%
+:: check for game breaking invalid input
+if %energytotal% LSS 0 echo. & echo Error! & pause >nul & goto buyenergy
 if %energytotal% GTR %money% (
 echo.
 echo.
@@ -2257,6 +2288,7 @@ pause >nul
 goto buybarley
 )
 set /a barleytotal=%buybarley% * %barleyprice%
+if %barleytotal% LSS 0 echo. & echo Error! & pause >nul & goto buybarlet
 if %barleytotal% GTR %money% (
 echo.
 echo.
@@ -2317,6 +2349,7 @@ pause >nul
 goto buywheat
 )
 set /a wheattotal=%buywheat% * %wheatprice%
+if %wheattotal% LSS 0 echo. & echo Error! & pause >nul & goto buywheat
 if %wheattotal% GTR %money% (
 echo.
 echo.
@@ -2377,6 +2410,7 @@ pause >nul
 goto buycorn
 )
 set /a corntotal=%buycorn% * %cornprice%
+if %corntotal% LSS 0 echo. & echo Error! & pause >nul & goto buycorn
 if %corntotal% GTR %money% (
 echo.
 echo.
@@ -2466,6 +2500,7 @@ pause >nul
 goto buypig
 )
 set /a pigtotal=%buypig% * %pigprice%
+if %pigtotal% LSS 0 echo. & echo Error! & pause >nul & goto buypig
 if %pigtotal% GTR %money% (
 echo.
 echo.
@@ -2527,6 +2562,7 @@ pause >nul
 goto buychicken
 )
 set /a chickentotal=%buychicken% * %chickenprice%
+if %chickentotal% LSS 0 echo. & echo Error! & pause >nul & goto buychicken
 if %chickentotal% GTR %money% (
 echo.
 echo.
@@ -2593,6 +2629,7 @@ pause >nul
 goto buycow
 )
 set /a cowtotal=%buycow% * %cowprice%
+if %cowtotal% LSS 0 echo. & echo Error! & pause >nul & goto buycow
 if %cowtotal% GTR %money% (
 echo.
 echo.
@@ -2681,6 +2718,7 @@ pause >nul
 goto buypigfeed
 )
 set /a pigfeedtotal=%buypigfeed% * %pigfeedprice%
+if %pigfeedtotal% LSS 0 echo. & echo Error! & pause >nul & goto buypigfeed
 if %pigfeedtotal% GTR %money% (
 echo.
 echo.
@@ -2741,6 +2779,7 @@ pause >nul
 goto buychickenfeed
 )
 set /a chickenfeedtotal=%buychickenfeed% * %chickenfeedprice%
+if %chickenfeedtotal% LSS 0 echo. & echo Error! & pause >nul & goto buychickenfeed
 if %chickenfeedtotal% GTR %money% (
 echo.
 echo.
@@ -2801,6 +2840,7 @@ pause >nul
 goto buycowfeed
 )
 set /a cowfeedtotal=%buycowfeed% * %cowfeedprice%
+if %cowfeedtotal% LSS 0 echo. & echo Error! & pause >nul & goto buycowfeed
 if %cowfeedtotal% GTR %money% (
 echo.
 echo.
