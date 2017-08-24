@@ -34,6 +34,7 @@ goto sets
 :sets
 cls
 set tractor=no
+set tracH=0
 set barleyH=0
 set wheatH=0
 set chickfeedH=0
@@ -1535,6 +1536,12 @@ echo -----------------------------------------------------
 echo.
 echo.
 )
+if %tractor% GTR 0 (
+echo Tractors : 1
+echo -----------------------------------------------------
+echo.
+echo.
+)
 pause >nul
 goto main
 ::######################################################################
@@ -2371,6 +2378,7 @@ goto buytract
 :ybuytract
 set tractor=yes
 set /a money=%money% - %tractorprice%
+set /a tracH=%tracH% + 1
 cls
 echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
@@ -3094,12 +3102,23 @@ echo -----------------------------------------------------
 echo.
 echo.
 )
+echo ---------------------Equipment-----------------------
+echo.
+echo.
+echo.
+if %tracH% GTR 0 (
+echo Tractors : %tracH%
+echo -----------------------------------------------------
+echo.
+echo.
+)
 pause >nul
 goto main
 ::######################################################################
 :save
 cls
 (echo pigfed=%pigfed%)> %name%.sav
+(echo tracH=%tracH%)>> %name%.sav
 (echo tractor=%tractor%)>> %name%.sav
 (echo loanamtdue=%loanamtdue%)>> %name%.sav
 (echo loancurrent=%loancurrent%)>> %name%.sav
