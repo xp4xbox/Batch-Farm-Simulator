@@ -3,6 +3,8 @@
 ::To level up, you must buy 2 pigs, 2 chickens and 10 rows of corn.
 ::To level up to level 3, you must buy at least 1 cow and 20 rows of barley.
 
+::Buying a tractor makes planting/harvesting use 0 energy
+
 ::There is a secret option that shows all history for purchased items if you type "history" in the main menu.
 @echo off
 TITLE Farm Town v1
@@ -31,6 +33,7 @@ goto sets
 ::default sets
 :sets
 cls
+set tractor=no
 set barleyH=0
 set wheatH=0
 set chickfeedH=0
@@ -87,6 +90,7 @@ set wheatsellprice=6
 set barleysellprice=8
 set hamsellprice=74
 set chickensellprice=20
+set tractorprice=300
 
 set barleyprice=3
 set wheatprice=2
@@ -913,7 +917,6 @@ echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
 echo.
 echo.
 echo.
-::generate random number between 1 and 10
 set /a rannum=%random% * %chanceforstorm% / 32768 + 1
 if "%rannum%"=="2" (
 set barley=0
@@ -989,6 +992,7 @@ pause >nul
 goto harvestt
 )
 set /a energy2use=%energyperwheatrowh% * %plantwheat%
+if "%tractor%"=="yes" set energy2use=0
 if %energy2use% GTR %energy% (
 echo.
 echo.
@@ -1049,6 +1053,7 @@ pause >nul
 goto harvestt
 )
 set /a energy2use=%energyperbarleyrowh% * %plantbarley%
+if "%tractor%"=="yes" set energy2use=0
 if %energy2use% GTR %energy% (
 echo.
 echo.
@@ -1109,6 +1114,7 @@ pause >nul
 goto harvestt
 )
 set /a energy2use=%energypercornrowh% * %plantcorn%
+if "%tractor%"=="yes" set energy2use=0
 if %energy2use% GTR %energy% (
 echo.
 echo.
@@ -1213,6 +1219,7 @@ pause >nul
 goto plantbarley
 )
 set /a energy2use=%energyperbarleyrow% * %plantebarley%
+if "%tractor%"=="yes" set energy2use=0
 if %energy2use% GTR %energy% (
 echo.
 echo.
@@ -1278,6 +1285,7 @@ pause >nul
 goto plantwheat
 )
 set /a energy2use=%energyperwheatrow% * %plantewheat%
+if "%tractor%"=="yes" set energy2use=0
 if %energy2use% GTR %energy% (
 echo.
 echo.
@@ -1343,6 +1351,7 @@ pause >nul
 goto plantcorn
 )
 set /a energy2use=%energypercornrow% * %plantecorn%
+if "%tractor%"=="yes" set energy2use=0
 if %energy2use% GTR %energy% (
 echo.
 echo.
@@ -2220,7 +2229,8 @@ echo.
 echo 1) Crops
 echo 2) Animals
 echo 3) Feed
-echo 4) Back To Main Menu
+echo 4) Equipment
+echo 5) Back To Main Menu
 echo.
 echo.
 set /p S=
@@ -2230,11 +2240,79 @@ goto store
 if "%S%"=="1" goto crops
 if "%S%"=="3" goto animalfeed
 if "%S%"=="2" goto animal
-if "%S%"=="4" goto main
+if "%S%"=="4" goto buyequi
+if "%S%"=="5" goto main
 echo.
 echo Invalid Choice, Please Try Again!
 pause >nul
 goto store
+::######################################################################
+:buyequi
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo What Equipment Would You Like To Buy?
+echo.
+echo.
+echo 1) Tractor
+echo 2) Truck
+echo 3) Back To Store
+echo.
+echo.
+set /p echoic=
+if not defined echoic goto buyequi
+if "%echoic%"=="1" goto buytract
+if "%echoic%"=="2" goto buytruck
+if "%echoic%"=="3" goto store
+echo.
+echo Invalid Choice. Please Try Again.
+pause >nul
+goto buyequi
+::######################################################################
+:buytract
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+if "%tractor%"=="yes" (
+echo You Already Own A Tractor.
+pause >nul
+goto buyequi
+)
+echo A Tractor Is Currently $%tractorprice%.
+echo.
+echo.
+if %money% LSS %tractorprice% (
+echo Sorry, You Do Not Currently Have Enough Money To Purchase A Tractor.
+pause >nul
+goto buyequi
+)
+echo Do You Really Want To Buy A Tractor For $%tractorprice%? (Y/N)
+echo.
+echo.
+set /p buyyn=
+if not defined buyyn goto buytract
+echo.
+echo.
+if "%buyyn%"=="y" goto ybuytract
+if "%buyyn%"=="n" goto buyequi
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto buytract
+:ybuytract
+set tractor=yes
+set /a money=%money% - %tractorprice%
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo A Tractor Has Been Purchased
+pause >nul
+goto buyequi
 ::######################################################################
 :crops
 cls
@@ -2956,6 +3034,7 @@ goto main
 :save
 cls
 (echo pigfed=%pigfed%)> %name%.sav
+(echo tractor=%tractor%)>> %name%.sav
 (echo loanamtdue=%loanamtdue%)>> %name%.sav
 (echo loancurrent=%loancurrent%)>> %name%.sav
 (echo barleyH=%barleyH%)>> %name%.sav
