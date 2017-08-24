@@ -90,8 +90,9 @@ set wheatsellprice=6
 set barleysellprice=8
 set hamsellprice=74
 set chickensellprice=20
-set tractorprice=300
+set tracsellprice=200
 
+set tractorprice=300
 set barleyprice=3
 set wheatprice=2
 set cornprice=6
@@ -1635,7 +1636,8 @@ echo 1) Crops
 echo 2) Milk
 echo 3) Eggs
 echo 4) Meat
-echo 5) Back To Main Menu
+echo 5) Equipment
+echo 6) Back To Main Menu
 echo.
 echo.
 set /p sellC=
@@ -1646,11 +1648,76 @@ if "%sellC%"=="1" goto cropsS
 if "%sellC%"=="2" goto sellM
 if "%sellC%"=="3" goto sellE
 if "%sellC%"=="4" goto sellMeat
-if "%sellC%"=="5" goto main
+if "%sellC%"=="5" goto sellequi
+if "%sellC%"=="6" goto main
 echo.
 echo Invalid Choice, Please Try Again.
 pause >nul
 goto sell
+::######################################################################
+:sellequi
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo What Equipment Would You Like To Sell?
+echo.
+echo.
+echo 1) Tractor
+echo 2) Back To Store
+echo.
+echo.
+set /p sellequic=
+if not defined sellequic goto sellequi
+if "%sellequic%"=="1" goto selltrac
+if "%sellequic%"=="2" goto sell
+echo.
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto sellequi
+::######################################################################
+:selltrac
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+if "%tractor%"=="no" (
+echo Sorry, You Currently Do Not Have A Tractor.
+pause >nul
+goto sellequi
+)
+echo A Used Tractor Is Currently Worth $%tracsellprice%.
+echo.
+echo.
+echo Do You Really Want To Sell A Tractor For $%tracsellprice%? Y/N
+echo.
+echo.
+set /p choiceyn=
+if not defined choiceyn goto selltrac
+echo.
+echo.
+if "%choiceyn%"=="y" goto yselltrac
+if "%choiceyn%"=="n" goto sellequi
+echo Invalid Choice, Please Try Again.
+pause >nul
+goto selltrac
+:yselltrac
+set tractor=no
+set /a money=%money% + %tracsellprice%
+if "%loancurrent%"=="no" goto skiploan2
+set /a royal=%interestrate% * %tracsellprice% / 100
+set /a money=%money% - %royal%
+:skiploan2
+cls
+echo      (Money : $%money%)   (Level : %level%)   (Energy : %energy%)
+echo.
+echo.
+echo.
+echo You Have Sold Your Tractor.
+pause >nul
+goto sellequi
 ::######################################################################
 :sellMeat
 cls
@@ -2257,15 +2324,14 @@ echo What Equipment Would You Like To Buy?
 echo.
 echo.
 echo 1) Tractor
-echo 2) Truck
-echo 3) Back To Store
+echo 2) Back To Store
 echo.
 echo.
 set /p echoic=
 if not defined echoic goto buyequi
 if "%echoic%"=="1" goto buytract
-if "%echoic%"=="2" goto buytruck
-if "%echoic%"=="3" goto store
+::if "%echoic%"=="2" goto buytruck
+if "%echoic%"=="2" goto store
 echo.
 echo Invalid Choice. Please Try Again.
 pause >nul
