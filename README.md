@@ -3,9 +3,9 @@
 This is a farm simulator game written in batch. This game was started a couple years, but after several difficult bugs, I decided to discontinue until I recently started back up on the project.
 
 
-![alt text](https://cdn.discordapp.com/attachments/268540850324111381/354780419503292416/pic2.png)
+![alt text](https://i.imgur.com/2zGehO0.png)
 
-![alt text](https://media.discordapp.net/attachments/268540850324111381/354780418005794826/pic1.png)
+![alt text](https://i.imgur.com/oYfYFhN.png)
 
 
 The code is 100% complete from what it was originaly inteaded to do. And is about 95% bug free.
