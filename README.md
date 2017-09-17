@@ -18,7 +18,7 @@ The code is 100% complete from what it was originaly inteaded to do. And is abou
 
 -Adding Sheep As An Animal In The Game
 
-# INSTALATION INSTRUCTIONS :
+# Installation Instructions:
 
 1. Restore default buffer size and window size for cmd if changed.
 2. Run Farm.bat anywere you want. (it is a 100% portable application although the save file will be placed in the user's userprofile directory ex. c:\users\xp4xbox)
