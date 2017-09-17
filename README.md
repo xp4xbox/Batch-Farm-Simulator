@@ -23,4 +23,4 @@ The code is 100% complete from what it was originaly inteaded to do. And is abou
 1. Restore default buffer size and window size for cmd if changed.
 2. Run Farm.bat anywere you want. (it is a 100% portable application although the save file will be placed in the user's userprofile directory ex. c:\users\xp4xbox)
 
-NOTE: If the original file does not work or closes unexpectedly, try using compiled .exe. If you still encounter any issues, please post an issue.
+####NOTE: If the original file does not work or closes unexpectedly, try using compiled .exe. If you still encounter any issues, please post an issue.
